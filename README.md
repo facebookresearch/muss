@@ -9,8 +9,9 @@ Linux with python 3.6 or above.
 ## Installing
 
 ```
-pip install .  # Install package
-pip install -r requirements.txt  # Install dependencies
+git clone git@github.com:facebookresearch/muss.git
+cd muss/
+pip install .
 ```
 
 ## How to use
