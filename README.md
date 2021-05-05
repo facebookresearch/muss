@@ -1,6 +1,6 @@
 # Multilingual Unsupervised Sentence Simplification
 
-Code to reproduce experiments in "MUSS: Multilingual Unsupervised Sentence Simplification by Mining Paraphrases"
+Code and pretrained models to reproduce experiments in "MUSS: Multilingual Unsupervised Sentence Simplification by Mining Paraphrases".
 
 ## Prerequisites
 
@@ -25,6 +25,12 @@ python scripts/simplify.py scripts/examples.fr --model-name muss_fr_mined
 # French
 python scripts/simplify.py scripts/examples.es --model-name muss_es_mined
 ```
+
+Pretrained models should be downloaded automatically, but you can also find them here:  
+[muss_en_wikilarge_mined](https://dl.fbaipublicfiles.com/muss/muss_en_wikilarge_mined.tar.gz)  
+[muss_en_mined](https://dl.fbaipublicfiles.com/muss/muss_en_mined.tar.gz)  
+[muss_fr_mined](https://dl.fbaipublicfiles.com/muss/muss_fr_mined.tar.gz)  
+[muss_es_mined](https://dl.fbaipublicfiles.com/muss/muss_es_mined.tar.gz)  
 
 ### Mine the data
 ```python
