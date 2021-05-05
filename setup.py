@@ -8,11 +8,21 @@
 from setuptools import setup
 
 
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
+with open('requirements.txt', 'r') as f:
+    requirements = f.read().strip().split('\n')
+
 setup(
     name='muss',
     version='1.0',
     description='MUSS: Multilingual Unsupervised Sentence Simplification by Mining Paraphrases',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Louis Martin',
     author_email='louismartincs@gmail.com',
+    url = 'https://github.com/facebookresearch/muss',
     packages=['muss'],
+    install_requires=requirements,
 )
