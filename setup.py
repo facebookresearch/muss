@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 #!/usr/bin/env python
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open('README.md', 'r') as f:
@@ -23,6 +23,6 @@ setup(
     author='Louis Martin',
     author_email='louismartincs@gmail.com',
     url = 'https://github.com/facebookresearch/muss',
-    packages=['muss'],
+    packages=find_packages('muss'),
     install_requires=requirements,
 )

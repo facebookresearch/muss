@@ -11,7 +11,7 @@ Linux with python 3.6 or above.
 ```
 git clone git@github.com:facebookresearch/muss.git
 cd muss/
-pip install .
+pip install -e .
 ```
 
 ## How to use
