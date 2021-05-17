@@ -8,6 +8,8 @@ from collections import defaultdict
 
 from tqdm import tqdm
 import pandas as pd
+import numpy as np
+import scipy
 
 from muss.utils.helpers import print_running_time
 from muss.utils.submitit import get_executor, print_job_id
@@ -22,7 +24,24 @@ from muss.mining.training import (
     get_all_baseline_rows,
 )
 from muss.resources.datasets import mix_datasets, create_smaller_dataset
-from muss.exploration import get_formatted_mean_and_confidence_interval
+
+
+def get_mean_confidence_interval(data, confidence=0.95):
+    data = np.array(data)
+    a = 1.0 * data
+    a = a[~np.isnan(a)]
+    n = len(a)
+    se = scipy.stats.sem(a)
+    h = se * scipy.stats.t.ppf((1 + confidence) / 2.0, n - 1)
+    return h
+
+
+def get_formatted_mean_and_confidence_interval(array, confidence=0.95):
+    array = np.array(array)
+    mean = np.mean(array)
+    confidence_interval = get_mean_confidence_interval(array, confidence=confidence)
+    return f"{mean:.2f}±{confidence_interval:.2f} ({array.size})"
+
 
 wikilarge = 'wikilarge_detokenized-wo_turkcorpus'
 uts_en_1bq_paraphrases = 'uts_en_query-9c9aa1cf05b77f6cd018a159bd9eaeb0_db-9c9aa1cf05b77f6cd018a159bd9eaeb0_topk-8_nprobe-16_density-0.6_distance-0.05_levenshtein-0.2_simplicity-0.0-wo_turkcorpus'  # noqa: E501
