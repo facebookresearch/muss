@@ -115,7 +115,7 @@ with log_action('Creating base index'):
     base_index_dir.mkdir(exist_ok=True, parents=True)
     # This can be very long
     base_index_path = create_base_index(
-        train_sentences, get_index_name(), get_embeddings, faiss.METRIC_L2_DIST, base_index_dir
+        train_sentences, get_index_name(), get_embeddings, faiss.METRIC_L2, base_index_dir
     )
 
 # Compute embeddings
