@@ -38,7 +38,7 @@ def check_dataset(dataset):
 
 def prepare_exp_dir():
     exp_dir = get_fairseq_exp_dir()
-    exp_dir.mkdir(exist_ok=True)
+    exp_dir.mkdir(exist_ok=True, parents=True)
     print(f'exp_dir={exp_dir}')
     return exp_dir
 

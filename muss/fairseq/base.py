@@ -110,7 +110,7 @@ def fairseq_train(
         --arch {arch} --dropout {dropout} --weight-decay 0.0 --clip-norm 0.1 --share-all-embeddings
         --no-epoch-checkpoints --save-interval 999999 --validate-interval 999999
         --max-update {max_update} --save-interval-updates {save_interval_updates} --keep-interval-updates 1 --patience 10
-        --max-sentences {max_sentences} --seed {seed}
+        --batch-size {max_sentences} --seed {seed}
         --distributed-world-size {ngpus} --distributed-port {distributed_port}
         '''
         if lr_scheduler == 'inverse_sqrt':

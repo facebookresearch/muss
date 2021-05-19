@@ -38,7 +38,7 @@ Pretrained models should be downloaded automatically, but you can also find them
 python scripts/mine_sequences.py
 ```
 
-### Train the models
+### Train the model
 ```python
 python scripts/train_model.py
 ```

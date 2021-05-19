@@ -43,6 +43,7 @@ def get_formatted_mean_and_confidence_interval(array, confidence=0.95):
     return f"{mean:.2f}±{confidence_interval:.2f} ({array.size})"
 
 
+print('WARNING: This script probably won\'t work flawlessly out of the box, but it should be easy to understand how to make it work for your use case.')
 wikilarge = 'wikilarge_detokenized-wo_turkcorpus'
 uts_en_1bq_paraphrases = 'uts_en_query-9c9aa1cf05b77f6cd018a159bd9eaeb0_db-9c9aa1cf05b77f6cd018a159bd9eaeb0_topk-8_nprobe-16_density-0.6_distance-0.05_levenshtein-0.2_simplicity-0.0-wo_turkcorpus'  # noqa: E501
 uts_fr_1bq_paraphrases = 'uts_fr_query-0b11603ee8cf563f443458c204130bb1_db-0b11603ee8cf563f443458c204130bb1_topk-8_nprobe-16_density-0.6_distance-0.05_levenshtein-0.2_simplicity-0.0-wo_alector'  # noqa: E501
@@ -104,7 +105,6 @@ for exp_name, kwargs in tqdm(kwargs_dict.items()):
         slurm_partition='priority',
         submit_decorators=[print_function_name, print_args, print_job_id, print_result, print_running_time],
         timeout_min=2 * 24 * 60,
-        slurm_comment='EMNLP Arxiv deadline May 1st',
         gpus_per_node=kwargs['train_kwargs']['ngpus'],
         nodes=1,
         slurm_constraint='volta32gb',

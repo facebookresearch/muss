@@ -11,7 +11,7 @@ import sys
 
 from muss.utils.helpers import run_command, create_directory_or_skip
 from muss.preprocessing import replace_lrb_rrb_file, normalize_punctuation
-from muss.utils.resources import download_and_extract, add_newline_at_end_of_file, git_clone
+from muss.utils.resources import download_and_extract, add_newline_at_end_of_file, git_clone, download
 from muss.resources.paths import get_dataset_dir, get_data_filepath, PHASES, LASER_DIR
 from muss.resources.datasets import apply_line_function_to_dataset
 from muss.text import normalize_unicode, word_detokenize
@@ -48,6 +48,21 @@ def prepare_wikilarge_detokenized():
     with create_directory_or_skip(new_dataset):
         prepare_wikilarge()
         apply_line_function_to_dataset(normalize_and_detokenize_line, 'wikilarge', new_dataset)
+
+
+def prepare_asset():
+    print('ASSET')
+    dataset = 'asset'
+    with create_directory_or_skip(get_dataset_dir(dataset)):
+        for phase in ('valid', 'test'):
+            for i in range(10):
+                for (old_language_name, new_language_name) in [('orig', 'complex'), (f'simp.{i}', f'simple.{i}')]:
+                    url = f'https://raw.githubusercontent.com/facebookresearch/asset/master/dataset/asset.{phase}.{old_language_name}'
+                    old_path = download(url)
+                    new_path = get_data_filepath(dataset, phase, new_language_name)
+                    shutil.copyfile(old_path, new_path)
+                    add_newline_at_end_of_file(new_path)
+    print('Done.')
 
 
 def prepare_laser():
