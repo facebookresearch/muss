@@ -11,7 +11,8 @@ Linux with python 3.6 or above (not compatible with python 3.9 yet).
 ```
 git clone git@github.com:facebookresearch/muss.git
 cd muss/
-pip install -e .
+pip install -e .  # Install package
+python -m spacy download en_core_web_md fr_core_news_md es_core_news_md  # Install required spacy models
 ```
 
 ## How to use
