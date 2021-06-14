@@ -24,7 +24,7 @@ Some scripts might still contain a few bugs, if you notice anything wrong, feel 
 python scripts/simplify.py scripts/examples.en --model-name muss_en_wikilarge_mined
 # French
 python scripts/simplify.py scripts/examples.fr --model-name muss_fr_mined
-# French
+# Spanish
 python scripts/simplify.py scripts/examples.es --model-name muss_es_mined
 ```
 
