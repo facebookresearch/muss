@@ -4,7 +4,7 @@ Code and pretrained models to reproduce experiments in "MUSS: Multilingual Unsup
 
 ## Prerequisites
 
-Linux with python 3.6 or above.
+Linux with python 3.6 or above (not compatible with python 3.9 yet).
 
 ## Installing
 
