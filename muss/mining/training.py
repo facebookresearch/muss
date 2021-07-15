@@ -73,6 +73,10 @@ def get_predict_files(language):
             get_data_filepath('simplext_corpus', 'valid', 'complex'),
             get_data_filepath('simplext_corpus', 'test', 'complex'),
         ],
+        'si':[
+            get_data_filepath('sin15m', 'valid','complex'), 
+            get_data_filepath('sin15m', 'test','complex')
+        ]
     }[language]
 
 
