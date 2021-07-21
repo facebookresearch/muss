@@ -27,11 +27,11 @@ from muss.utils.helpers import print_running_time, add_dicts
 def check_dataset(dataset):
     # Sanity check with evaluation dataset
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('asset', 'valid', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('sin15M', 'valid', 'complex')
     ):
         warnings.warn('WARNING: Dataset has validation samples in training set!')
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('asset', 'test', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('sin15M', 'test', 'complex')
     ):
         warnings.warn('WARNING: Dataset has test samples in training set!')
 
@@ -59,6 +59,7 @@ def fairseq_prepare_and_train(dataset, **kwargs):
     kwargs = check_and_resolve_args(kwargs)
     exp_dir = prepare_exp_dir()
     preprocessors_kwargs = kwargs.get('preprocessors_kwargs', {})
+    print(preprocessors_kwargs)
     preprocessors = get_preprocessors(preprocessors_kwargs)
     if len(preprocessors) > 0:
         dataset = create_preprocessed_dataset(dataset, preprocessors, n_jobs=8)

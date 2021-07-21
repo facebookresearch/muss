@@ -275,6 +275,7 @@ def normalize_unicode(text):
 
 @lru_cache(maxsize=1)
 def get_spacy_tokenizer(language='en'):
+    assert False, "Not available for Sinhala"
     return get_spacy_model(language=language).Defaults.create_tokenizer(get_spacy_model(language=language))
 
 

@@ -104,6 +104,16 @@ def get_evaluate_kwargs(language, phase='valid'):
             'orig_sents_path': get_data_filepath('simplext_corpus', 'test', 'complex'),
             'refs_sents_paths': [get_data_filepath('simplext_corpus', 'test', 'simple')],
         },
+        ('si','valid'): {
+            'test_set':'custom',
+            'orig_sents_path': get_data_filepath('sin15M','valid','complex'),
+            'refs_sents_paths': [get_data_filepath('sin15M','valid','simple')]
+        },
+        ('si','test'): {
+            'test_set':'custom',
+            'orig_sents_path': get_data_filepath('sin15M','test','complex'),
+            'refs_sents_paths': [get_data_filepath('sin15M','test','simple')]
+        }
     }[(language, phase)]
 
 
