@@ -76,9 +76,9 @@ def fairseq_train(
     exp_dir,
     ngpus=1,
     batch_size=8192,  # Batch size across all gpus (taking update freq into account)
-    max_sentences=64,  # Max sentences per GPU
+    max_sentences=1024,  # Max sentences per GPU
     arch='transformer',
-    save_interval_updates=100,
+    save_interval_updates=1000,
     max_update=50000,
     lr=0.001,
     warmup_updates=4000,
