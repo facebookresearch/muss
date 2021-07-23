@@ -20,11 +20,12 @@ ALLOWED_MODEL_NAMES = [
     'muss_en_mined',
     'muss_fr_mined',
     'muss_es_mined',
+    'muss_si_mined'
 ]
 
 
 def is_model_using_mbart(model_name):
-    return '_fr_' in model_name or '_es_' in model_name
+    return '_fr_' in model_name or '_es_' in model_name or '_si_' in model_name
 
 
 def get_model_path(model_name):
