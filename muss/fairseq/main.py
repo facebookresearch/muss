@@ -107,7 +107,7 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath('asset', 'valid', 'complex'), get_data_filepath('asset', 'test', 'complex')]
+        'predict_files', [get_data_filepath('sin15M', 'valid', 'complex'), get_data_filepath('sin15M', 'test', 'complex')]
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
