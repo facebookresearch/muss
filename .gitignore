@@ -6,3 +6,4 @@
 .nfs*
 experiments
 ts-notebooks
+resources/datasets/_*
