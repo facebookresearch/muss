@@ -88,7 +88,7 @@ def run_command(cmd, mute=False):
 def open_files(filepaths, mode='r'):
     files = []
     try:
-        files = [Path(filepath).open(mode) for filepath in filepaths]
+        files = [Path(filepath).open(mode, encoding='utf-8') for filepath in filepaths]
         yield files
     finally:
         [f.close() for f in files]
@@ -134,7 +134,7 @@ def write_lines(lines, filepath=None):
         filepath = get_temp_filepath()
     filepath = Path(filepath)
     filepath.parent.mkdir(parents=True, exist_ok=True)
-    with filepath.open('w') as f:
+    with filepath.open('w', encoding='utf-8') as f:
         for line in lines:
             f.write(line + '\n')
     return filepath
@@ -145,7 +145,7 @@ def yield_lines(filepath, gzipped=False, n_lines=None):
     open_function = open
     if gzipped or filepath.name.endswith('.gz'):
         open_function = gzip.open
-    with open_function(filepath, 'rt') as f:
+    with open_function(filepath, 'rt', encoding='utf-8') as f:
         for i, l in enumerate(f):
             if n_lines is not None and i >= n_lines:
                 break
@@ -322,7 +322,7 @@ def mute(mute_stdout=True, mute_stderr=True):
 
 @contextmanager
 def log_std_streams(filepath):
-    log_file = open(filepath, 'w')
+    log_file = open(filepath, 'w', encoding='utf-8')
     try:
         with redirect_streams(source_streams=[sys.stdout], target_streams=[log_file, sys.stdout]):
             with redirect_streams(source_streams=[sys.stderr], target_streams=[log_file, sys.stderr]):
