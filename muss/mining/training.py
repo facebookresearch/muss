@@ -74,8 +74,8 @@ def get_predict_files(language):
             get_data_filepath('simplext_corpus', 'test', 'complex'),
         ],
         'si':[
-            get_data_filepath('sin15m', 'valid','complex'), 
-            get_data_filepath('sin15m', 'test','complex')
+            get_data_filepath('newsela', 'valid','complex'), 
+            get_data_filepath('newsela', 'test','complex')
         ]
     }[language]
 
@@ -106,13 +106,13 @@ def get_evaluate_kwargs(language, phase='valid'):
         },
         ('si','valid'): {
             'test_set':'custom',
-            'orig_sents_path': get_data_filepath('sin15M','valid','complex'),
-            'refs_sents_paths': [get_data_filepath('sin15M','valid','simple')]
+            'orig_sents_path': get_data_filepath('newsela','valid','complex'),
+            'refs_sents_paths': [get_data_filepath('newsela','valid','simple')]
         },
         ('si','test'): {
             'test_set':'custom',
-            'orig_sents_path': get_data_filepath('sin15M','test','complex'),
-            'refs_sents_paths': [get_data_filepath('sin15M','test','simple')]
+            'orig_sents_path': get_data_filepath('newsela','test','complex'),
+            'refs_sents_paths': [get_data_filepath('newsela','test','simple')]
         }
     }[(language, phase)]
 
