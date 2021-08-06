@@ -20,7 +20,8 @@ ALLOWED_MODEL_NAMES = [
     'muss_en_mined',
     'muss_fr_mined',
     'muss_es_mined',
-    'muss_si_mined'
+    'muss_si_mined',
+    'muss_si_newsela'
 ]
 
 
