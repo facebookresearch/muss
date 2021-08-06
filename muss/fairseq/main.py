@@ -181,6 +181,8 @@ def get_language_from_dataset(dataset):
         return 'es'
     if '_it_' in dataset:
         return 'it'
+    if 'newsela' in dataset:
+        return 'si'
     else:
         return 'en'
 
@@ -191,6 +193,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
+        'si': ['newsela'],
         # 'it': ['simpitiki']
     }[language]
 
