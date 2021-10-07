@@ -59,7 +59,7 @@ def get_muss_preprocessors(model_name):
     return get_preprocessors(preprocessors_kwargs)
 
 
-def simplify_sentences(source_sentences, model_name='en_bart_access_wikilarge_mined'):
+def simplify_sentences(source_sentences, model_name='muss_en_wikilarge_mined'):
     # Best ACCESS parameter values for the en_bart_access_wikilarge_mined model, ideally we would need to use another set of parameters for other models.
     exp_dir = get_model_path(model_name)
     preprocessors = get_muss_preprocessors(model_name)
