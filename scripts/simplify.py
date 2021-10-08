@@ -24,8 +24,6 @@ if __name__ == '__main__':
     source_sentences = read_lines(args.filepath)
     pred_sentences = simplify_sentences(source_sentences, model_name=args.model_name)
     for c, s in zip(source_sentences, pred_sentences):
-        s = s.encode('utf-8')
-        c = c.encode('utf-8')
         print('-' * 80)
         print(f'Original:   {c}')
         print(f'Simplified: {s}')
