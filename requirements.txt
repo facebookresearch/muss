@@ -22,6 +22,6 @@ sacremoses>=0.0.38
 nevergrad>=0.4.0.post3
 editdistance>=0.5.3
 tokenizers>=0.5.2
-easse@ git+git://github.com/feralvam/easse.git
-kenlm@ git+git://github.com/kpu/kenlm.git
+easse@ git+https://github.com/feralvam/easse.git
+kenlm@ git+https://github.com/kpu/kenlm.git
 cachier>=1.2.8
