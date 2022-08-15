@@ -61,6 +61,7 @@ def has_low_lm_prob(text, language):
         'en': (RESOURCES_DIR / 'models/language_models/kenlm_enwiki', -0.6),
         'fr': (RESOURCES_DIR / 'models/language_models/kenlm_frwiki', -0.6),
         'es': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_es', -0.8),
+        'pt': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_pt', -0.8),
         'it': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_it', -0.8),
     }[language]
     if not model_dir.exists():

@@ -174,6 +174,8 @@ def find_best_parametrization(exp_dir, preprocessors_kwargs, fast_parametrizatio
 
 def get_language_from_dataset(dataset):
     # TODO: Should be in ts.uts.training
+    if '_pt_' in dataset:
+        return 'pt'
     if '_fr_' in dataset:
         return 'fr'
     if '_es_' in dataset:
@@ -190,6 +192,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
+        'pt': ['cefet']
         # 'it': ['simpitiki']
     }[language]
 

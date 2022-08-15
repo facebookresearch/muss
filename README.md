@@ -12,7 +12,7 @@ Linux with python 3.6 or above (not compatible with python 3.9 yet).
 git clone git@github.com:facebookresearch/muss.git
 cd muss/
 pip install -e .  # Install package
-python -m spacy download en_core_web_md fr_core_news_md es_core_news_md  # Install required spacy models
+python -m spacy download en_core_web_md fr_core_news_md es_core_news_md pt_core_news_md # Install required spacy models
 ```
 
 ## How to use
@@ -26,6 +26,8 @@ python scripts/simplify.py scripts/examples.en --model-name muss_en_wikilarge_mi
 python scripts/simplify.py scripts/examples.fr --model-name muss_fr_mined
 # Spanish
 python scripts/simplify.py scripts/examples.es --model-name muss_es_mined
+# Portuguese
+python scripts/simplify.py scripts/examples.pt --model-name muss_pt_mined
 ```
 
 Pretrained models should be downloaded automatically, but you can also find them here:  

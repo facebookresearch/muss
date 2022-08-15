@@ -11,7 +11,7 @@ import unicodedata
 
 SPECIAL_TOKEN_REGEX = r'<[a-zA-Z\-_\d\.]+>'
 
-
+# Get the model control tokens. Ex: <DepTreeDepth_25>
 def extract_special_tokens(sentence):
     '''Remove any number of token at the beginning of the sentence'''
     match = re.match(fr'(^(?:{SPECIAL_TOKEN_REGEX} *)+) *(.*)$', sentence)
@@ -72,6 +72,7 @@ def get_sentence_tokenizer(language='en'):
         'en': 'english',
         'fr': 'french',
         'es': 'spanish',
+        'pt': 'portuguese',
         'it': 'italian',
         'de': 'german',
     }[language]
@@ -217,6 +218,7 @@ def get_spacy_model(language='en', size='md'):
         'en': f'en_core_web_{size}',
         'fr': f'fr_core_news_{size}',
         'es': f'es_core_news_{size}',
+        'pt': f'pt_core_news_{size}',
         'it': f'it_core_news_{size}',
         'de': f'de_core_news_{size}',
     }[language]
@@ -275,7 +277,8 @@ def normalize_unicode(text):
 
 @lru_cache(maxsize=1)
 def get_spacy_tokenizer(language='en'):
-    return get_spacy_model(language=language).Defaults.create_tokenizer(get_spacy_model(language=language))
+    from spacy.tokenizer import Tokenizer
+    return Tokenizer(get_spacy_model(language=language).vocab)
 
 
 def get_spacy_content_tokens(text, language='en'):
