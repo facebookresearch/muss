@@ -20,11 +20,19 @@ ALLOWED_MODEL_NAMES = [
     'muss_en_mined',
     'muss_fr_mined',
     'muss_es_mined',
+    'muss_pt_mined'
 ]
+
+TOKENS_RATIO = {
+    "LengthRatioPreprocessor": 0.9,
+    "ReplaceOnlyLevenshteinPreprocessor": 0.65,
+    "WordRankRatioPreprocessor": 0.6,
+    "DependencyTreeDepthRatioPreprocessor": 0.4,
+}
 
 
 def is_model_using_mbart(model_name):
-    return '_fr_' in model_name or '_es_' in model_name
+    return '_fr_' in model_name or '_es_' in model_name or '_pt_' in model_name
 
 
 def get_model_path(model_name):
@@ -44,10 +52,10 @@ def get_language_from_model_name(model_name):
 def get_muss_preprocessors(model_name):
     language = get_language_from_model_name(model_name)
     preprocessors_kwargs = {
-        'LengthRatioPreprocessor': {'target_ratio': 0.9, 'use_short_name': False},
-        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.65, 'use_short_name': False},
-        'WordRankRatioPreprocessor': {'target_ratio': 0.75, 'language': language, 'use_short_name': False},
-        'DependencyTreeDepthRatioPreprocessor': {'target_ratio': 0.4, 'language': language, 'use_short_name': False},
+        'LengthRatioPreprocessor': {'target_ratio': TOKENS_RATIO["LengthRatioPreprocessor"], 'use_short_name': False},
+        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': TOKENS_RATIO["ReplaceOnlyLevenshteinPreprocessor"], 'use_short_name': False},
+        'WordRankRatioPreprocessor': {'target_ratio': TOKENS_RATIO["WordRankRatioPreprocessor"], 'language': language, 'use_short_name': False},
+        'DependencyTreeDepthRatioPreprocessor': {'target_ratio': TOKENS_RATIO["DependencyTreeDepthRatioPreprocessor"], 'language': language, 'use_short_name': False},
     }
     if is_model_using_mbart(model_name):
         preprocessors_kwargs['SentencePiecePreprocessor'] = {
@@ -68,7 +76,7 @@ def simplify_sentences(source_sentences, model_name='muss_en_wikilarge_mined'):
         generate_kwargs['task'] = 'translation_from_pretrained_bart'
         generate_kwargs[
             'langs'
-        ] = 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'  # noqa: E501
+        ] = 'pt_XX,ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'  # noqa: E501
     simplifier = get_fairseq_simplifier(exp_dir, **generate_kwargs)
     simplifier = get_preprocessed_simplifier(simplifier, preprocessors=preprocessors)
     source_path = get_temp_filepath()
