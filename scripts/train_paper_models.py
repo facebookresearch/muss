@@ -79,6 +79,13 @@ kwargs_dict = {
     'mbart_access_uts_es_1bq_paraphrases_wo_simplext': get_mbart_kwargs(
         dataset=uts_es_1bq_paraphrases, language='es', use_access=True
     ),
+    # Portuguese table
+    'transformer_uts_pt_1bq_paraphrases_wo_simplext': get_transformer_kwargs(
+        dataset=uts_pt_1bq_paraphrases, language='pt', use_access=False
+    ),
+    'mbart_access_uts_pt_1bq_paraphrases_wo_simplext': get_mbart_kwargs(
+        dataset=uts_pt_1bq_paraphrases, language='pt', use_access=True
+    ),
     # Ablation size of data
     'bart_access_uts_en_1bq_paraphrases_1k': get_bart_kwargs(
         dataset=create_smaller_dataset(uts_en_1bq_paraphrases, 1000), language='en', use_access=True

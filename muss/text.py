@@ -68,6 +68,8 @@ def get_sentence_tokenizer(language='en'):
     # Inline lazy import because importing nltk is slow
     import nltk
 
+    nltk.download('punkt')
+
     language = {
         'en': 'english',
         'fr': 'french',
