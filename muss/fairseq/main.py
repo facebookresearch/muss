@@ -192,7 +192,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
-        'pt': ['cefet']
+        'pt': ['uts']
         # 'it': ['simpitiki']
     }[language]
 

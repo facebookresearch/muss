@@ -41,7 +41,7 @@ ccnet_dir = Path(
         'Please download the CCNet corpus from https://github.com/facebookresearch/cc_net and enter the path to the downloaded data: '
     )
 )
-language = input('What language do you want to process? (en/fr/es): ')
+language = input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
@@ -54,6 +54,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     n_shards = {  # Number of shards to take for each languages for ~1B sentences
         'en': 15,
         'fr': 25,
+        'pt': 13,
         'es': 13,  # We would need about 20 shards for 1B sentences, but there are only 13
     }[language]
     ccnet_filepaths = [ccnet_dir / f'{language}_head_{i:04d}.json.gz' for i in range(n_shards)]
