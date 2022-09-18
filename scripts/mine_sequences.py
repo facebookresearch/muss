@@ -36,7 +36,7 @@ from muss.mining.nn_search import (
 )
 from muss.mining.filtering import SimplicityScorer
 
-ccnet_dir = '/home/raphael'
+ccnet_dir = Path('/home/raphael')
 language = 'pt' #input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
