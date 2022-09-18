@@ -36,12 +36,8 @@ from muss.mining.nn_search import (
 )
 from muss.mining.filtering import SimplicityScorer
 
-ccnet_dir = Path(
-    input(
-        'Please download the CCNet corpus from https://github.com/facebookresearch/cc_net and enter the path to the downloaded data: '
-    )
-)
-language = input('What language do you want to process? (en/fr/es/pt): ')
+ccnet_dir = '/home/raphael'
+language = 'pt' #input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
@@ -61,7 +57,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     raw_original_dir = dataset_dir / 'raw_original'
     raw_original_dir.mkdir(exist_ok=True, parents=True)
     output_dirs = [raw_original_dir / f'{language}_head_{i:04d}' for i in range(n_shards)]
-    n_docs_per_file = 50000
+    n_docs_per_file = 25000
     executor = get_executor(cluster=cluster, slurm_partition='dev', timeout_min=1 * 30, slurm_array_parallelism=16)
     jobs = []
     with executor.batch():

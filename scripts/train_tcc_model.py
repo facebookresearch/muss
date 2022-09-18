@@ -41,6 +41,7 @@ def get_formatted_mean_and_confidence_interval(array, confidence=0.95):
     return f"{mean:.2f}±{confidence_interval:.2f} ({array.size})"
 
 
+### Receber a variavel como parâmetro do script
 print('Iniciando treinamento...')
 uts_pt_1bq_paraphrases = 'uts_pt_query-bb318e13fdbc98cf38b9ef4430aae1a1_db-bb318e13fdbc98cf38b9ef4430aae1a1_topk-8_nprobe-16_density-0.6_distance-0.05_levenshtein-0.2_simplicity-0.0-wo_simplext_data_for_journal_saggion_newsela'  # noqa: E501
 
