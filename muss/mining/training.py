@@ -47,7 +47,7 @@ def fix_bart_base_model_embeddings_shape():
 def prepare_mbart_model():
     mbart_dir = MODELS_DIR / 'mbart'
     if not mbart_dir.exists():
-        url = 'https://dl.fbaipublicfiles.com/fairseq/models/mbart/mbart.CC25.tar.gz'
+        url = 'https://dl.fbaipublicfiles.com/fairseq/models/mbart50/mbart50.pretrained.tar.gz'
         shutil.move(download_and_extract(url)[0], mbart_dir)
     return mbart_dir
 
@@ -67,50 +67,22 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
 
 def get_predict_files(language):
     return {
-        'en': [get_data_filepath('asset', 'valid', 'complex'), get_data_filepath('asset', 'test', 'complex')],
-        'fr': [get_data_filepath('alector', 'valid', 'complex'), get_data_filepath('alector', 'test', 'complex')],
-        'pt': [get_data_filepath('cefet', 'valid', 'complex'), get_data_filepath('cefet', 'test', 'complex')],
-        'es': [
-            get_data_filepath('simplext_corpus', 'valid', 'complex'),
-            get_data_filepath('simplext_corpus', 'test', 'complex'),
-        ],
+        'pt': [get_data_filepath('uts', 'valid', 'complex'), get_data_filepath('uts', 'test', 'complex')]
     }[language]
 
 
 def get_evaluate_kwargs(language, phase='valid'):
     return {
-        ('en', 'valid'): {'test_set': 'asset_valid'},
-        ('en', 'test'): {'test_set': 'asset_test'},
-        ('fr', 'valid'): {
-            'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('alector', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('alector', 'valid', 'simple')],
-        },
-        ('fr', 'test'): {
-            'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('alector', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('alector', 'test', 'simple')],
-        },
         ('pt', 'valid'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('cefet', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('cefet', 'valid', 'simple')],
+            'orig_sents_path': get_data_filepath('uts', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts', 'valid', 'simple')],
         },
         ('pt', 'test'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('cefet', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('cefet', 'test', 'simple')],
-        },
-        ('es', 'valid'): {
-            'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('simplext_corpus', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('simplext_corpus', 'valid', 'simple')],
-        },
-        ('es', 'test'): {
-            'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('simplext_corpus', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('simplext_corpus', 'test', 'simple')],
-        },
+            'orig_sents_path': get_data_filepath('uts', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts', 'test', 'simple')],
+        }
     }[(language, phase)]
 
 
@@ -120,7 +92,7 @@ def get_transformer_kwargs(dataset, language, use_access, use_short_name=False):
         'parametrization_budget': 128,
         'predict_files': get_predict_files(language),
         'train_kwargs': {
-            'ngpus': 8,
+            'ngpus': 1,
             'arch': 'bart_large',
             'max_tokens': 4096,
             'truncate_source': True,
@@ -232,19 +204,19 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
             },
         },
         'preprocess_kwargs': {
-            'dict_path': mbart_dir / 'dict.txt',
+            'dict_path': mbart_dir / 'dict.pt_XX.txt',
             'source_lang': source_lang,
             'target_lang': target_lang,
         },
         'train_kwargs': add_dicts(
-            {'ngpus': 8},
+            {'ngpus': 1},
             args_str_to_dict(
-                f'''--restore-file {mbart_path}  --arch mbart_large --task translation_from_pretrained_bart  --source-lang {source_lang} --target-lang {target_lang}  --encoder-normalize-before --decoder-normalize-before --criterion label_smoothed_cross_entropy --label-smoothing 0.2  --dataset-impl mmap --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' --lr-scheduler polynomial_decay --lr 3e-05 --min-lr -1 --warmup-updates 2500 --total-num-update 40000 --dropout 0.3 --attention-dropout 0.1  --weight-decay 0.0 --max-tokens 1024 --update-freq 2 --log-format simple --log-interval 2 --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler --langs pt_XX,ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN
+                f'''--restore-file {mbart_path}  --arch mbart_large --task translation_from_pretrained_bart  --source-lang {source_lang} --target-lang {target_lang}  --encoder-normalize-before --decoder-normalize-before --criterion label_smoothed_cross_entropy --label-smoothing 0.2  --dataset-impl mmap --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' --lr-scheduler polynomial_decay --lr 3e-05 --min-lr -1 --warmup-updates 2500 --total-num-update 40000 --dropout 0.3 --attention-dropout 0.1  --weight-decay 0.0 --max-tokens 1024 --update-freq 2 --log-format simple --log-interval 2 --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler --langs ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI
      --layernorm-embedding  --ddp-backend no_c10d'''
             ),
         ),  # noqa: E501
         'generate_kwargs': args_str_to_dict(
-            f'''--task translation_from_pretrained_bart --source_lang {source_lang} --target-lang {target_lang} --batch-size 32 --langs pt_XX,ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'''  # noqa: E501
+            f'''--task translation_from_pretrained_bart --source_lang {source_lang} --target-lang {target_lang} --batch-size 32 --langs ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI'''  # noqa: E501
         ),
         'evaluate_kwargs': get_evaluate_kwargs(language),
     }
@@ -257,69 +229,16 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
 
 def get_all_baseline_rows():
     paths = {
-        ('asset', 'test'): ('en', TEST_SETS_PATHS[('asset_test', 'orig')], TEST_SETS_PATHS[('asset_test', 'refs')]),
-        ('asset', 'valid'): ('en', TEST_SETS_PATHS[('asset_valid', 'orig')], TEST_SETS_PATHS[('asset_valid', 'refs')]),
-        ('turkcorpus_detokenized', 'test'): (
-            'en',
-            TEST_SETS_PATHS[('turkcorpus_test', 'orig')],
-            TEST_SETS_PATHS[('turkcorpus_test', 'refs')],
-        ),
-        ('turkcorpus_detokenized', 'valid'): (
-            'en',
-            TEST_SETS_PATHS[('turkcorpus_valid', 'orig')],
-            TEST_SETS_PATHS[('turkcorpus_valid', 'refs')],
-        ),
-        ('alector', 'test'): (
-            'fr',
-            get_data_filepath('alector', 'test', 'complex'),
-            [get_data_filepath('alector', 'test', 'simple')],
-        ),
-        ('alector', 'valid'): (
-            'fr',
-            get_data_filepath('alector', 'valid', 'complex'),
-            [get_data_filepath('alector', 'valid', 'simple')],
-        ),
-        ('cefet', 'test'): (
+        ('uts', 'test'): (
             'pt',
-            get_data_filepath('cefet', 'test', 'complex'),
-            [get_data_filepath('cefet', 'test', 'simple')],
+            get_data_filepath('uts', 'test', 'complex'),
+            [get_data_filepath('uts', 'test', 'simple')],
         ),
-        ('cefet', 'valid'): (
+        ('uts', 'valid'): (
             'pt',
-            get_data_filepath('cefet', 'valid', 'complex'),
-            [get_data_filepath('cefet', 'valid', 'simple')],
-        ),
-        # Old dataset with problems
-        ('simplext_corpus_all', 'test'): (
-            'es',
-            get_data_filepath('simplext_corpus_all', 'test', 'complex'),
-            [get_data_filepath('simplext_corpus_all', 'test', 'simple')],
-        ),
-        ('simplext_corpus_all', 'valid'): (
-            'es',
-            get_data_filepath('simplext_corpus_all', 'valid', 'complex'),
-            [get_data_filepath('simplext_corpus_all', 'valid', 'simple')],
-        ),
-        ('simplext_corpus_all_fixed', 'test'): (
-            'es',
-            get_data_filepath('simplext_corpus_all_fixed', 'test', 'complex'),
-            [get_data_filepath('simplext_corpus_all_fixed', 'test', 'simple')],
-        ),
-        ('simplext_corpus_all_fixed', 'valid'): (
-            'es',
-            get_data_filepath('simplext_corpus_all_fixed', 'valid', 'complex'),
-            [get_data_filepath('simplext_corpus_all_fixed', 'valid', 'simple')],
-        ),
-        ('simpitiki', 'test'): (
-            'it',
-            get_data_filepath('simpitiki', 'test', 'complex'),
-            [get_data_filepath('simpitiki', 'test', 'simple')],
-        ),
-        ('simpitiki', 'valid'): (
-            'it',
-            get_data_filepath('simpitiki', 'valid', 'complex'),
-            [get_data_filepath('simpitiki', 'valid', 'simple')],
-        ),
+            get_data_filepath('uts', 'valid', 'complex'),
+            [get_data_filepath('uts', 'valid', 'simple')],
+        )
     }
     rows = []
     for (dataset, phase), (language, orig_sents_path, refs_sents_paths) in tqdm(paths.items()):
