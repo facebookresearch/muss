@@ -60,7 +60,7 @@ for exp_name, kwargs in tqdm(kwargs_dict.items()):
         cluster='local',
         slurm_partition='priority',
         submit_decorators=[print_function_name, print_args, print_job_id, print_result, print_running_time],
-        timeout_min=12 * 60,
+        timeout_min=96 * 60,
         gpus_per_node=kwargs['train_kwargs']['ngpus'],
         nodes=1,
         slurm_constraint='volta32gb',

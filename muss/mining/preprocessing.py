@@ -79,7 +79,7 @@ def sentence_tokenize_document(document, language):
     # Filter out sentences (too short, too much punctuation, low lm prob)
     sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
-    sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
+    # sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
     return sentences
 
 
@@ -109,13 +109,13 @@ def get_n_cells(n_total_samples):
 
 def get_index_name():
     # n_total_samples = int(1e9)
-    n_total_samples = int(1e7)
+    n_total_samples = int(1e8)
     n_cells = get_n_cells(n_total_samples)
     sq_size = 8
     pca_dim = 512
     embeddings_dim = 1024
     index_size = (n_total_samples * embeddings_dim * 4) / (32 / sq_size) / (embeddings_dim / pca_dim)
-    print(f'Expected index size: {index_size // 1e7}GB')
+    print(f'Expected index size: {index_size // 1e8}GB')
     return f'PCAR{pca_dim},IVF{n_cells},SQ{sq_size}'
 
 
