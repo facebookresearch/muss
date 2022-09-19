@@ -57,7 +57,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     raw_original_dir = dataset_dir / 'raw_original'
     raw_original_dir.mkdir(exist_ok=True, parents=True)
     output_dirs = [raw_original_dir / f'{language}_head_{i:04d}' for i in range(n_shards)]
-    n_docs_per_file = 25000
+    n_docs_per_file = 50000
     executor = get_executor(cluster=cluster, slurm_partition='dev', timeout_min=1 * 30, slurm_array_parallelism=16)
     jobs = []
     with executor.batch():
