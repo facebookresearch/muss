@@ -26,7 +26,7 @@ def yield_json_documents_from_compressed(compressed_path):
         yield json.loads(document)
 
 
-def split_ccnet_shard(shard_path, output_dir, n_docs_per_subshard=10000):
+def split_ccnet_shard(shard_path, output_dir, n_docs_per_subshard=5000):
     '''We need to split the shards even more for the embeddings to fit in memory'''
 
     def write_lines_to_compressed_file(lines, compressed_filepath):
