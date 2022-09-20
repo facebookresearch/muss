@@ -93,7 +93,7 @@ with log_action('Tokenizing sentences'):
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=1000, language=language, n_encoding_jobs=5
+    sentences, max_tokens=3000, language=language, n_encoding_jobs=5
 )  # noqa: E731
 
 # Create base index
@@ -128,7 +128,6 @@ with log_action('Computing embeddings'):
         timeout_min=2 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    jobs = []
     with executor.batch():
         for sentences_path in set(query_sentences_paths + db_sentences_paths):
             if get_index_path(sentences_path, indexes_dir).exists():
@@ -137,9 +136,7 @@ with log_action('Computing embeddings'):
             job = executor.submit(
                 compute_and_save_embeddings, sentences_path, base_index_path, get_embeddings, indexes_dir=indexes_dir
             )
-            jobs.append(job)
-    print([job.job_id for job in jobs])
-    [job.result() for job in tqdm(jobs)]
+            job.result()
 
 # Mine the paraphrases
 with log_action('Mining paraphrases'):
@@ -153,7 +150,6 @@ with log_action('Mining paraphrases'):
         timeout_min=2 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    jobs = []
     # Run NN search query file by query file
     with executor.batch():
         for query_sentences_path in tqdm(query_sentences_paths, desc='submitting queries'):
@@ -170,9 +166,7 @@ with log_action('Mining paraphrases'):
                 nn_search_results_dir,
                 delete_intermediary=True,
             )
-            jobs.append(job)
-    print([job.job_id for job in jobs])
-    [job.result() for job in tqdm(jobs)]
+            job.result()
 
 # Filter candidate paraphrases
 with log_action('Filtering candidate paraphrases'):
