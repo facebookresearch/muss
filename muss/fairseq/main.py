@@ -223,6 +223,7 @@ def finetune_and_predict_on_dataset(finetuning_dataset, exp_dir, **kwargs):
 
 
 def fairseq_train_and_evaluate_with_parametrization(dataset, **kwargs):
+    print(f'>> O dataset de treinamento é: {dataset}')
     # Training
     exp_dir = print_running_time(fairseq_prepare_and_train)(dataset, **kwargs)
     # Find best parametrization

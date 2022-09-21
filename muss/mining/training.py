@@ -67,7 +67,8 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
 
 def get_predict_files(language):
     return {
-        'pt': [get_data_filepath('uts', 'valid', 'complex'), get_data_filepath('uts', 'test', 'complex')]
+        'pt': [get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+        get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')]
     }[language]
 
 
@@ -75,13 +76,13 @@ def get_evaluate_kwargs(language, phase='valid'):
     return {
         ('pt', 'valid'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('uts', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('uts', 'valid', 'simple')],
+            'orig_sents_path': get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'simple')],
         },
         ('pt', 'test'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('uts', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('uts', 'test', 'simple')],
+            'orig_sents_path': get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'simple')],
         }
     }[(language, phase)]
 
@@ -229,15 +230,15 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
 
 def get_all_baseline_rows():
     paths = {
-        ('uts', 'test'): (
+        ('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test'): (
             'pt',
-            get_data_filepath('uts', 'test', 'complex'),
-            [get_data_filepath('uts', 'test', 'simple')],
+            get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'),
+            [get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'simple')],
         ),
-        ('uts', 'valid'): (
+        ('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid'): (
             'pt',
-            get_data_filepath('uts', 'valid', 'complex'),
-            [get_data_filepath('uts', 'valid', 'simple')],
+            get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+            [get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'simple')],
         )
     }
     rows = []
