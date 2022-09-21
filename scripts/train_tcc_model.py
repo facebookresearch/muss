@@ -41,64 +41,64 @@ def get_formatted_mean_and_confidence_interval(array, confidence=0.95):
     confidence_interval = get_mean_confidence_interval(array, confidence=confidence)
     return f"{mean:.2f}±{confidence_interval:.2f} ({array.size})"
 
-#if __name__ == '__main__':
-#parser = argparse.ArgumentParser(description='Train muss model')
-#parser.add_argument('datasetname', type=str, help='dataset name')
-#args = parser.parse_args()
-#uts_pt_1bq_paraphrases = args.datasetname
-#print(f'Iniciando treinamento com dataset: {uts_pt_1bq_paraphrases}')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Train muss model')
+    parser.add_argument('datasetname', type=str, help='dataset name')
+    args = parser.parse_args()
+    uts_pt_1bq_paraphrases = args.datasetname
+    print(f'Iniciando treinamento com dataset: {uts_pt_1bq_paraphrases}')
 
-print('Iniciando treinamento...')
-uts_pt_1bq_paraphrases = 'uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0'  # noqa: E501
+    #print('Iniciando treinamento...')
+    #uts_pt_1bq_paraphrases = 'uts_pt_query-bb318e13fdbc98cf38b9ef4430aae1a1_db-bb318e13fdbc98cf38b9ef4430aae1a1_topk-8_nprobe-16_density-0.6_distance-0.05_levenshtein-0.2_simplicity-0.0-wo_simplext_data_for_journal_saggion_newsela'  # noqa: E501
 
-kwargs_dict = {
-    # Portuguese table
-    'transformer_uts_pt_1bq_paraphrases_wo_simplext': get_transformer_kwargs(
-        dataset=uts_pt_1bq_paraphrases, language='pt', use_access=False
-    ),
-    'mbart_access_uts_pt_1bq_paraphrases_wo_simplext': get_mbart_kwargs(
-        dataset=uts_pt_1bq_paraphrases, language='pt', use_access=True
+    kwargs_dict = {
+        # Portuguese table
+        'transformer_uts_pt_1bq_paraphrases_wo_simplext': get_transformer_kwargs(
+            dataset=uts_pt_1bq_paraphrases, language='pt', use_access=False
+        ),
+        'mbart_access_uts_pt_1bq_paraphrases_wo_simplext': get_mbart_kwargs(
+            dataset=uts_pt_1bq_paraphrases, language='pt', use_access=True
+        )
+    }
+
+    jobs_dict = defaultdict(list)
+    for exp_name, kwargs in tqdm(kwargs_dict.items()):
+        executor = get_executor(
+            cluster='local',
+            slurm_partition='priority',
+            submit_decorators=[print_function_name, print_args, print_job_id, print_result, print_running_time],
+            timeout_min=96 * 60,
+            gpus_per_node=kwargs['train_kwargs']['ngpus'],
+            nodes=1,
+            slurm_constraint='volta32gb',
+            name=exp_name,
+        )
+        for i in range(5):
+            job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)
+            jobs_dict[exp_name].append(job)
+    [job.result() for jobs in jobs_dict.values() for job in jobs]
+
+    # Evaluation
+    table = []
+    for exp_name, jobs in tqdm(jobs_dict.items()):
+        for job in jobs:
+            exp_dir = get_fairseq_exp_dir(job.job_id)
+            kwargs = job.submission().kwargs
+            table.extend(get_score_rows(exp_dir, kwargs, additional_fields={'exp_name': exp_name, 'job_id': job.job_id}))
+    table.extend(print_running_time(get_all_baseline_rows)())
+    df_scores = pd.DataFrame(table)
+
+
+    def mean(arr):
+        if len(arr) not in [8, 10]:  # Hack for Reference rows
+            arr = arr[-5:]
+        return get_formatted_mean_and_confidence_interval(arr)
+
+
+    pd.set_option('display.max_rows', 300)
+    pd.set_option('display.max_colwidth', 100)
+    print(
+        df_scores.groupby(['language', 'dataset', 'phase', 'exp_name'])
+        .agg([mean])[['sari', 'bleu', 'fkgl']]
+        .sort_values(by=['language', 'dataset', 'phase', ('sari', 'mean')])
     )
-}
-
-jobs_dict = defaultdict(list)
-for exp_name, kwargs in tqdm(kwargs_dict.items()):
-    executor = get_executor(
-        cluster='local',
-        slurm_partition='priority',
-        submit_decorators=[print_function_name, print_args, print_job_id, print_result, print_running_time],
-        timeout_min=96 * 60,
-        gpus_per_node=kwargs['train_kwargs']['ngpus'],
-        nodes=1,
-        slurm_constraint='volta32gb',
-        name=exp_name,
-    )
-    for i in range(5):
-        job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)
-        jobs_dict[exp_name].append(job)
-[job.result() for jobs in jobs_dict.values() for job in jobs]
-
-# Evaluation
-table = []
-for exp_name, jobs in tqdm(jobs_dict.items()):
-    for job in jobs:
-        exp_dir = get_fairseq_exp_dir(job.job_id)
-        kwargs = job.submission().kwargs
-        table.extend(get_score_rows(exp_dir, kwargs, additional_fields={'exp_name': exp_name, 'job_id': job.job_id}))
-table.extend(print_running_time(get_all_baseline_rows)())
-df_scores = pd.DataFrame(table)
-
-
-def mean(arr):
-    if len(arr) not in [8, 10]:  # Hack for Reference rows
-        arr = arr[-5:]
-    return get_formatted_mean_and_confidence_interval(arr)
-
-
-pd.set_option('display.max_rows', 300)
-pd.set_option('display.max_colwidth', 100)
-print(
-    df_scores.groupby(['language', 'dataset', 'phase', 'exp_name'])
-    .agg([mean])[['sari', 'bleu', 'fkgl']]
-    .sort_values(by=['language', 'dataset', 'phase', ('sari', 'mean')])
-)
