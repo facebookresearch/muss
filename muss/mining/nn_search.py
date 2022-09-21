@@ -438,7 +438,7 @@ def get_simplification_pairs_paths(query_sentences_paths, db_sentences_paths, to
 
 def combine_simplifications_in_dataset(simplification_pairs, dataset):
     with create_directory_or_skip(get_dataset_dir(dataset)):
-        assert len(simplification_pairs) > 30000, f'Not enough pairs: {len(simplification_pairs)}'
+        assert len(simplification_pairs) > 3000, f'Not enough pairs: {len(simplification_pairs)}'
         indexes = np.random.permutation(len(simplification_pairs))
         for phase, start_index, end_index in [
             ('test', 1000, 2000),
