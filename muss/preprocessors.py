@@ -349,7 +349,7 @@ def train_sentencepiece(input_filepaths, vocab_size, sentencepiece_model_path, n
         args_str = f'''
         --bos_id=-1 --eos_id=-1
         --input={",".join([str(path) for path in input_filepaths])} --model_prefix={sentencepiece_model_prefix}
-        --vocab_size={vocab_size} --num_threads={num_threads} --character_coverage=0.9995
+        --vocab_size=6150 --num_threads={num_threads} --character_coverage=0.9995
         '''
         if sum([count_lines(filepath) for filepath in input_filepaths]) > max_lines:
             args_str += f' --input_sentence_size={max_lines} --shuffle_input_sentence=true'
@@ -380,7 +380,7 @@ class SentencePiecePreprocessor(AbstractPreprocessor):
     @store_args
     def __init__(
         self,
-        vocab_size=6150,
+        vocab_size=None,
         input_filepaths=None,
         num_threads=64,
         max_lines=10 ** 7,
