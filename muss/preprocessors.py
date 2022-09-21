@@ -380,7 +380,7 @@ class SentencePiecePreprocessor(AbstractPreprocessor):
     @store_args
     def __init__(
         self,
-        vocab_size=None,
+        vocab_size=6150,
         input_filepaths=None,
         num_threads=64,
         max_lines=10 ** 7,
