@@ -441,9 +441,9 @@ def combine_simplifications_in_dataset(simplification_pairs, dataset):
         assert len(simplification_pairs) > 30000, f'Not enough pairs: {len(simplification_pairs)}'
         indexes = np.random.permutation(len(simplification_pairs))
         for phase, start_index, end_index in [
-            ('test', 10000, 20000),
-            ('valid', 20000, 30000),
-            ('train', 30000, len(indexes)),
+            ('test', 1000, 2000),
+            ('valid', 2000, 3000),
+            ('train', 3000, len(indexes)),
         ]:
             with write_lines_in_parallel(
                 [get_data_filepath(dataset, phase, 'complex'), get_data_filepath(dataset, phase, 'simple')]
