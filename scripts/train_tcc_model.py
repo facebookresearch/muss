@@ -73,7 +73,7 @@ if __name__ == '__main__':
             slurm_constraint='volta32gb',
             name=exp_name,
         )
-        for i in range(2):
+        for i in range(1):
             job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)
             jobs_dict[exp_name].append(job)
     [job.result() for jobs in jobs_dict.values() for job in jobs]
