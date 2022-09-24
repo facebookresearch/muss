@@ -23,7 +23,7 @@ def get_laser_embeddings(
     bpe_codes_path=BPE_CODES_PATH,
     encoder_path=ENCODER_PATH,
     language='en',
-    max_tokens=6000,
+    max_tokens=12000,
     normalize_l2=False,
     n_encoding_jobs=10,
 ):

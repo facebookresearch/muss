@@ -171,7 +171,7 @@ def _fairseq_generate(
         --diverse-beam-groups {diverse_beam_groups if diverse_beam_groups is not None else -1} --diverse-beam-strength {diverse_beam_strength}
         --max-tokens {max_tokens}
         --model-overrides "{{'encoder_embed_path': None, 'decoder_embed_path': None}}"
-        --skip-invalid-size-inputs-valid-test
+        --skip-invalid-size-inputs-valid-test --bpe sentencepiece
         '''
         if sampling:
             args += f'--sampling --sampling-topk 10'
