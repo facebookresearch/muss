@@ -70,6 +70,7 @@ def get_muss_preprocessors(model_name):
 def simplify_sentences(source_sentences, model_name='muss_en_wikilarge_mined'):
     # Best ACCESS parameter values for the en_bart_access_wikilarge_mined model, ideally we would need to use another set of parameters for other models.
     exp_dir = get_model_path(model_name)
+    print(f"Iniciando simplificação com o modelo {model_name} disponível em {exp_dir}")
     preprocessors = get_muss_preprocessors(model_name)
     generate_kwargs = {}
     if is_model_using_mbart(model_name):
