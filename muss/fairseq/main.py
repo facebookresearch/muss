@@ -27,11 +27,11 @@ from muss.utils.helpers import print_running_time, add_dicts
 def check_dataset(dataset):
     # Sanity check with evaluation dataset
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('uts_pt_query-005390e74d5ac5d29ff3819fd93e7c4b_db-005390e74d5ac5d29ff3819fd93e7c4b_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex')
     ):
         warnings.warn('WARNING: Dataset has validation samples in training set!')
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('uts_pt_query-005390e74d5ac5d29ff3819fd93e7c4b_db-005390e74d5ac5d29ff3819fd93e7c4b_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')
     ):
         warnings.warn('WARNING: Dataset has test samples in training set!')
 
@@ -106,7 +106,7 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'), get_data_filepath('uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')]
+        'predict_files', [get_data_filepath('uts_pt_query-005390e74d5ac5d29ff3819fd93e7c4b_db-005390e74d5ac5d29ff3819fd93e7c4b_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'), get_data_filepath('uts_pt_query-005390e74d5ac5d29ff3819fd93e7c4b_db-005390e74d5ac5d29ff3819fd93e7c4b_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')]
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
@@ -192,7 +192,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
-        'pt': ['uts_pt_query-ffe19f9286420e07100e93f694ccb6ff_db-ffe19f9286420e07100e93f694ccb6ff_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0']
+        'pt': ['uts_pt_query-005390e74d5ac5d29ff3819fd93e7c4b_db-005390e74d5ac5d29ff3819fd93e7c4b_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0']
         # 'it': ['simpitiki']
     }[language]
 
