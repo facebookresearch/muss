@@ -203,10 +203,10 @@ def finetune_and_predict_on_dataset(finetuning_dataset, exp_dir, **kwargs):
     if kwargs.get('fast_parametrization_search', False):
         prefix += '_fast'
     pred_filepaths = [
-        #exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_{finetuning_dataset}_valid.pred',
-        exp_dir / f'{prefix}_cefet_valid-test_cefet_valid.pred',
-        #exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_{finetuning_dataset}_test.pred',
-        exp_dir / f'{prefix}_cefet_valid-test_cefet_test.pred',
+        exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_valid.pred',
+        #exp_dir / f'{prefix}_cefet_valid-test_cefet_valid.pred',
+        exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_test.pred',
+        #exp_dir / f'{prefix}_cefet_valid-test_cefet_test.pred',
     ]
     if all([path.exists() for path in pred_filepaths]):
         return

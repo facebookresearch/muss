@@ -322,7 +322,7 @@ def get_score_rows(exp_dir, kwargs, additional_fields=None):
     rows = []
     language = get_language_from_dataset(kwargs['dataset'])
     for pred_path in exp_dir.glob('finetune_*.pred'):
-        dataset, phase = re.match(r'finetune_.+?_valid-test_(.+)_(.+?).pred', pred_path.name).groups()
+        dataset, phase = re.match(r'finetune_.+?_valid-test_(.+).pred', pred_path.name).groups()
         scores = get_scores_on_dataset(pred_path, dataset, phase)
         row = {
             'language': language,
