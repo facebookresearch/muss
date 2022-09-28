@@ -203,31 +203,33 @@ with log_action('Filtering candidate paraphrases'):
         timeout_min=2 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    with executor.batch():
-        for query_sentences_path in tqdm(query_sentences_paths, desc='query'):
-            simplification_pairs_path = get_pairs_path(
-                query_sentences_path, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir
-            )
-            if simplification_pairs_path.exists():
-                continue
-            # Should take ~10 minutes
-            job = executor.submit(
-                compute_and_save_simplification_pairs,
-                query_sentences_path=query_sentences_path,
-                db_sentences_paths=db_sentences_paths,
-                base_index_path=base_index_path,
-                cache_dir=cache_dir,
-                pairs_dir=pairs_dir,
-                get_embeddings=get_embeddings,
-                topk=topk,
-                nprobe=nprobe,
-                language=language,
-                filter_kwargs=filter_kwargs,
-                is_simpler=is_simpler,
-            )
-            jobs.append(job)
-    print([job.job_id for job in jobs])
-    [job.result() for job in tqdm(jobs)]
+    #with executor.batch():
+    for query_sentences_path in tqdm(query_sentences_paths, desc='query'):
+        simplification_pairs_path = get_pairs_path(
+            query_sentences_path, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir
+        )
+        if simplification_pairs_path.exists():
+            continue
+        # Should take ~10 minutes
+        job = executor.submit(
+            compute_and_save_simplification_pairs,
+            query_sentences_path=query_sentences_path,
+            db_sentences_paths=db_sentences_paths,
+            base_index_path=base_index_path,
+            cache_dir=cache_dir,
+            pairs_dir=pairs_dir,
+            get_embeddings=get_embeddings,
+            topk=topk,
+            nprobe=nprobe,
+            language=language,
+            filter_kwargs=filter_kwargs,
+            is_simpler=is_simpler,
+        )
+        print(f"Starting job with pid: {job.job_id}")
+        job.result()
+        #jobs.append(job)
+    #print([job.job_id for job in jobs])
+    #[job.result() for job in tqdm(jobs)]
 
 with log_action('Wrapping up paraphrases'):
     simplification_pairs = get_simplification_pairs_paths(
