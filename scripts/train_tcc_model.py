@@ -66,9 +66,9 @@ if __name__ == '__main__':
         kwargs['train_kwargs']['ngpus'] = 1
         kwargs['train_kwargs']['memory_efficient_fp16'] = True
         kwargs['train_kwargs']['max_sentences'] = 32
-        kwargs['train_kwargs']['max_tokens'] = 1024
-        kwargs['train_kwargs']['update_freq'] = 100
-        kwargs['train_kwargs']['batch_size'] = 16
+        #kwargs['train_kwargs']['max_tokens'] = 1024
+        #kwargs['train_kwargs']['update_freq'] = 100
+        #kwargs['train_kwargs']['batch_size'] = 16
         executor = get_executor(
             cluster='local',
             slurm_partition='priority',
