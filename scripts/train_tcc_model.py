@@ -68,15 +68,17 @@ if __name__ == '__main__':
             slurm_partition='priority',
             submit_decorators=[print_function_name, print_args, print_job_id, print_result, print_running_time],
             timeout_min=96 * 60,
-            gpus_per_node=kwargs['train_kwargs']['ngpus'],
+            gpus_per_node=1,
             nodes=1,
-            slurm_constraint='volta32gb',
+            slurm_constraint='volta14gb',
             name=exp_name,
+            cpus_per_task = 8,
+            mem_gb = 40
         )
         for i in range(1):
             job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)
             jobs_dict[exp_name].append(job)
-    [job.result() for jobs in jobs_dict.values() for job in jobs]
+            job.result()
 
     # Evaluation
     table = []
