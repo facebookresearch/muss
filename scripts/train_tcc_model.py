@@ -70,8 +70,9 @@ if __name__ == '__main__':
             timeout_min=96 * 60,
             gpus_per_node=kwargs['train_kwargs']['ngpus'],
             nodes=1,
-            slurm_constraint='volta32gb',
+            slurm_constraint='volta15gb',
             name=exp_name,
+            mem_gb=15
         )
         for i in range(1):
             job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)
