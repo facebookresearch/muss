@@ -76,7 +76,7 @@ if __name__ == '__main__':
             timeout_min=96 * 60,
             gpus_per_node=1,
             nodes=1,
-            slurm_constraint='volta14gb',
+            slurm_constraint='volta16gb',
             name=exp_name,
             cpus_per_task = 8,
             mem_gb = 40
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         for i in range(1):
             job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)
             jobs_dict[exp_name].append(job)
-            job.result()
+    [job.result() for jobs in jobs_dict.values() for job in jobs]
 
     # Evaluation
     table = []
