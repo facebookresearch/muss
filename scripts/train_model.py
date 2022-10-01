@@ -18,7 +18,7 @@ import scipy
 #prepare_asset()
 
 dataset = 'uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0'
-kwargs = get_mbart_kwargs(dataset=dataset, language='pt', use_access=True, bart_model='bart.large')
+kwargs = get_mbart_kwargs(dataset=dataset, language='pt', use_access=True)
 kwargs['train_kwargs']['ngpus'] = 1
 kwargs['train_kwargs']['memory_efficient_fp16'] = True
 kwargs['train_kwargs']['max_sentences'] = 32
