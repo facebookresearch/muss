@@ -67,8 +67,8 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
 
 def get_predict_files(language):
     return {
-        'pt': [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'),
-        get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex')]
+        'pt': [get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+        get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')]
     }[language]
 
 
@@ -76,13 +76,13 @@ def get_evaluate_kwargs(language, phase='valid'):
     return {
         ('pt', 'valid'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'simple')],
+            'orig_sents_path': get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'simple')],
         },
         ('pt', 'test'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'simple')],
+            'orig_sents_path': get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'simple')],
         }
     }[(language, phase)]
 
@@ -230,15 +230,15 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
 
 def get_all_baseline_rows():
     paths = {
-        ('_5f406847ddad8aea2f2a1ed19cb9c048', 'test'): (
+        ('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test'): (
             'pt',
-            get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex'),
-            [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'simple')],
+            get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'),
+            [get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'simple')],
         ),
-        ('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid'): (
+        ('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid'): (
             'pt',
-            get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'),
-            [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'simple')],
+            get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+            [get_data_filepath('uts_pt_query-83c433aa147dd76db3418c194e5f47ef_db-83c433aa147dd76db3418c194e5f47ef_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'simple')],
         )
     }
     rows = []
@@ -322,7 +322,7 @@ def get_score_rows(exp_dir, kwargs, additional_fields=None):
     rows = []
     language = get_language_from_dataset(kwargs['dataset'])
     for pred_path in exp_dir.glob('finetune_*.pred'):
-        dataset, phase = re.match(r'finetune_.+?_valid-test_(.+).pred', pred_path.name).groups()
+        dataset, phase = re.match(r'finetune_.+?_valid-test_(.+)_(.+?).pred', pred_path.name).groups()
         scores = get_scores_on_dataset(pred_path, dataset, phase)
         row = {
             'language': language,
