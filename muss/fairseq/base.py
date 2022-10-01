@@ -104,7 +104,7 @@ def fairseq_train(
         distributed_port = random.randint(10000, 20000)
         args = f'''
         {preprocessed_dir} --task translation --source-lang complex --target-lang simple --save-dir {checkpoints_dir}
-        --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0
+        --optimizer --reset-optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0
         --criterion {criterion} --label-smoothing 0.1
         --lr-scheduler {lr_scheduler} --lr {lr} --warmup-updates {warmup_updates} --update-freq {update_freq}
         --arch {arch} --dropout {dropout} --weight-decay 0.0 --clip-norm 0.1 --share-all-embeddings
