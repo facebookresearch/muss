@@ -94,6 +94,8 @@ def get_transformer_kwargs(dataset, language, use_access, use_short_name=False):
         'predict_files': get_predict_files(language),
         'train_kwargs': {
             'ngpus': 1,
+            'restore_file': '/home/daniely_assis20/muss-ptBR/experiments/fairseq/slurmjob_2756/checkpoints/checkpoint_best.pt',
+            'max_sentences': 32,
             'arch': 'bart_large',
             'max_tokens': 4096,
             'truncate_source': True,
