@@ -63,8 +63,6 @@ if __name__ == '__main__':
 
     jobs_dict = defaultdict(list)
     for exp_name, kwargs in tqdm(kwargs_dict.items()):
-        kwargs['train_kwargs']['max_sentences'] = 32
-        kwargs['train_kwargs']['restore_file'] = '/home/daniely_assis20/muss-ptBR/experiments/fairseq/slurmjob_2756/checkpoints/checkpoint_best.pt'
         executor = get_executor(
             cluster='local',
             slurm_partition='priority',
