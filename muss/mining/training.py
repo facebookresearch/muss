@@ -197,6 +197,7 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
     target_lang = 'simple'
     kwargs = {
         'dataset': dataset,
+        'restore_file': '/home/daniely_assis20/muss-ptBR/experiments/fairseq/local_1664659402279/checkpoints/checkpoint_best.pt',
         'metrics_coefs': [0, 1, 0],
         'parametrization_budget': 128,
         'predict_files': get_predict_files(language),
