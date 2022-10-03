@@ -50,7 +50,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     n_shards = {  # Number of shards to take for each languages for ~1B sentences
         'en': 15,
         'fr': 25,
-        'pt': 10,
+        'pt': 1,
         'es': 13,  # We would need about 20 shards for 1B sentences, but there are only 13
     }[language]
     ccnet_filepaths = [ccnet_dir / f'{language}_head_{i:04d}.json.gz' for i in range(n_shards)]
@@ -147,9 +147,11 @@ with log_action('Mining paraphrases'):
         timeout_min=2 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
+    print("Iniciando fase de mineração de paráfrases")
     # Run NN search query file by query file
     with executor.batch():
         for query_sentences_path in tqdm(query_sentences_paths, desc='submitting queries'):
+            print(f"Executando mineração da base {query_sentences_path}")
             if get_results_path(query_sentences_path, db_sentences_paths, topk, nprobe, nn_search_results_dir).exists():
                 continue
             # Should take about ~1h30 each
@@ -162,9 +164,11 @@ with log_action('Mining paraphrases'):
                 nn_search_results_dir,
                 delete_intermediary=True,
             )
+            print("done")
 
 # Filter candidate paraphrases
 with log_action('Filtering candidate paraphrases'):
+    print("Iniciando filtro de frases candidatas")
     pairs_dir = cache_dir / 'pairs'
     pairs_dir.mkdir(exist_ok=True, parents=True)
     filter_kwargs = {
