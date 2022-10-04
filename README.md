@@ -44,7 +44,7 @@ wget https://huggingface.co/edugp/kenlm/resolve/main/wikipedia/pt.arpa.bin
 ```
 
 ```python
-python scripts/mine_sequences.py
+python3 scripts/mine_sequences.py
 ```
 
 ### Train the model

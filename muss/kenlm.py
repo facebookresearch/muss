@@ -6,7 +6,7 @@
 
 from functools import lru_cache
 from pathlib import Path
-from model import KenlmModel
+from muss.model import KenlmModel
 
 import kenlm
 from tokenizers import SentencePieceBPETokenizer
