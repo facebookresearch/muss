@@ -6,7 +6,6 @@ from typing import Dict
 
 import kenlm
 import sentencepiece
-from huggingface_hub import cached_download, hf_hub_url
 
 
 class SentencePiece:
