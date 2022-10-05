@@ -93,7 +93,7 @@ with log_action('Tokenizing sentences'):
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=3000, language=language, n_encoding_jobs=5
+    sentences, max_tokens=1000, language=language, n_encoding_jobs=5
 )  # noqa: E731
 
 # Create base index
