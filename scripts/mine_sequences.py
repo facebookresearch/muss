@@ -99,7 +99,7 @@ get_embeddings = lambda sentences: get_laser_embeddings(
 # Create base index
 print("Criando base index...")
 with log_action('Creating base index'):
-    n_train_sentences = 10 ** 7
+    n_train_sentences = 4 * (10 ** 6)
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
