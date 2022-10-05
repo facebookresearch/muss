@@ -97,6 +97,7 @@ get_embeddings = lambda sentences: get_laser_embeddings(
 )  # noqa: E731
 
 # Create base index
+print("Criando base index...")
 with log_action('Creating base index'):
     n_train_sentences = 10 ** 7
     train_sentences = []
@@ -115,6 +116,7 @@ with log_action('Creating base index'):
         train_sentences, get_index_name(), get_embeddings, faiss.METRIC_L2, base_index_dir
     )
 
+print("Computando embeddings...")
 # Compute embeddings
 with log_action('Computing embeddings'):
     cache_dir = get_cache_dir(dataset_dir) / embeddings_type_name
@@ -136,6 +138,7 @@ with log_action('Computing embeddings'):
             compute_and_save_embeddings(sentences_path, base_index_path, get_embeddings, indexes_dir=indexes_dir)
 
 # Mine the paraphrases
+print("Minerando parafrases...")
 with log_action('Mining paraphrases'):
     nn_search_results_dir = cache_dir / 'nn_search_results'
     nn_search_results_dir.mkdir(exist_ok=True, parents=True)
@@ -167,8 +170,8 @@ with log_action('Mining paraphrases'):
             print("done")
 
 # Filter candidate paraphrases
+print("Iniciando filtro de frases candidatas")
 with log_action('Filtering candidate paraphrases'):
-    print("Iniciando filtro de frases candidatas")
     pairs_dir = cache_dir / 'pairs'
     pairs_dir.mkdir(exist_ok=True, parents=True)
     filter_kwargs = {
@@ -235,6 +238,7 @@ with log_action('Filtering candidate paraphrases'):
     #print([job.job_id for job in jobs])
     #[job.result() for job in tqdm(jobs)]
 
+print("Salvando datasets...")
 with log_action('Wrapping up paraphrases'):
     simplification_pairs = get_simplification_pairs_paths(
         query_sentences_paths, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir
