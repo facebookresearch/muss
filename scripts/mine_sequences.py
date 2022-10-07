@@ -41,8 +41,8 @@ language = 'pt' #input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
-slurm_partition = 'dev,scavenge'
-slurm_array_parallelism = 1024
+slurm_partition = 'debug'
+slurm_array_parallelism = 8
 
 # Split CCNet shards into subshards
 with log_action('Splitting CCNet shards into smaller subshards'):
@@ -58,7 +58,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     raw_original_dir.mkdir(exist_ok=True, parents=True)
     output_dirs = [raw_original_dir / f'{language}_head_{i:04d}' for i in range(n_shards)]
     n_docs_per_file = 50000
-    executor = get_executor(cluster=cluster, slurm_partition='dev', timeout_min=1 * 30, slurm_array_parallelism=16)
+    executor = get_executor(cluster=cluster, slurm_partition='debug', timeout_min=1 * 30, slurm_array_parallelism=16)
     jobs = []
     with executor.batch():
         for ccnet_filepath, output_dir in zip(ccnet_filepaths, output_dirs):
@@ -90,6 +90,8 @@ with log_action('Tokenizing sentences'):
             jobs.append(job)
     print([job.job_id for job in jobs])
     [job.result() for job in tqdm(jobs)]
+
+print("Sentenças tokenizadas")
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
