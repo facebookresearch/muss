@@ -57,8 +57,8 @@ def get_kenlm_wiki_model():
     return model
 
 
-def get_kenlm_log_prob(text, model_dir, *args, **kwargs):
+def get_kenlm_log_prob(text, *args, **kwargs):
     #tokenizer = get_spm_tokenizer(model_dir)
-    kenlm_model = get_kenlm_wiki_model(model_dir)
+    kenlm_model = get_kenlm_wiki_model()
     #encoded_text = ' '.join(tokenizer.encode(text).tokens)
     return kenlm_model.get_perplexity(text)
