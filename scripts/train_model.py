@@ -17,7 +17,7 @@ import scipy
 #prepare_wikilarge_detokenized()
 #prepare_asset()
 
-dataset = 'uts_pt_query-7b9d36f976d5958e24f276b2fa556449_db-7b9d36f976d5958e24f276b2fa556449_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0'
+dataset = 'uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0'
 kwargs = get_mbart_kwargs(dataset=dataset, language='pt', use_access=True)
 kwargs['train_kwargs']['ngpus'] = 1
 kwargs['train_kwargs']['memory_efficient_fp16'] = True
