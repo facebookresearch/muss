@@ -68,7 +68,7 @@ def sentence_tokenize_document(document, language):
     # Filter out sentences (too short, too much punctuation, low lm prob)
     sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
-    #sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
+    sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
     return sentences
 
 
