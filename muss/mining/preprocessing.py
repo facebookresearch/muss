@@ -63,7 +63,7 @@ def has_low_lm_prob(text, language):
 
 
 def has_spelling_error(text):
-    return re.search("ãest", text) != None
+    return re.search("ãest|&quot|http", text) != None
 
 
 def sentence_tokenize_document(document, language):
