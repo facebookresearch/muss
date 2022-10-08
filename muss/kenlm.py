@@ -10,7 +10,7 @@ from muss.model import KenlmModel
 
 import kenlm
 from tokenizers import SentencePieceBPETokenizer
-
+from muss.resources.paths import KENLM_DIR
 from muss.utils.helpers import get_temp_filepaths, read_lines, write_lines, log_action, run_command
 
 
@@ -53,7 +53,7 @@ def get_kenlm_model(model_dir):
 
 @lru_cache(maxsize=10)
 def get_kenlm_wiki_model():
-    model = KenlmModel.from_pretrained("wikipedia", "pt")
+    model = KenlmModel.from_pretrained(KENLM_DIR, "pt")
     return model
 
 

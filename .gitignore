@@ -5,5 +5,4 @@
 .pytest_cache
 .nfs*
 experiments
-resources
 ts-notebooks
