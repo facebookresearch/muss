@@ -58,7 +58,7 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
         'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.8, 'use_short_name': use_short_name},
         'WordRankRatioPreprocessor': {'target_ratio': 0.8, 'language': language, 'use_short_name': use_short_name},
         'DependencyTreeDepthRatioPreprocessor': {
-            'target_ratio': 0.8,
+            'target_ratio': 1.3,
             'language': language,
             'use_short_name': use_short_name,
         },
@@ -67,8 +67,8 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
 
 def get_predict_files(language):
     return {
-        'pt': [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'),
-        get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex')]
+        'pt': [get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+        get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')]
     }[language]
 
 
@@ -76,13 +76,13 @@ def get_evaluate_kwargs(language, phase='valid'):
     return {
         ('pt', 'valid'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'simple')],
+            'orig_sents_path': get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'simple')],
         },
         ('pt', 'test'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'simple')],
+            'orig_sents_path': get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'simple')],
         }
     }[(language, phase)]
 
@@ -94,6 +94,8 @@ def get_transformer_kwargs(dataset, language, use_access, use_short_name=False):
         'predict_files': get_predict_files(language),
         'train_kwargs': {
             'ngpus': 1,
+            'restore_file': '/home/daniely_assis20/muss-ptBR/experiments/fairseq/slurmjob_2756/checkpoints/checkpoint_best.pt',
+            'max_sentences': 32,
             'arch': 'bart_large',
             'max_tokens': 4096,
             'truncate_source': True,
@@ -195,6 +197,7 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
     target_lang = 'simple'
     kwargs = {
         'dataset': dataset,
+        #'restore_file': '/home/daniely_assis20/muss-ptBR/experiments/fairseq/local_1664659402279/checkpoints/checkpoint_best.pt',
         'metrics_coefs': [0, 1, 0],
         'parametrization_budget': 128,
         'predict_files': get_predict_files(language),
@@ -212,7 +215,7 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
         'train_kwargs': add_dicts(
             {'ngpus': 1},
             args_str_to_dict(
-                f'''--restore-file {mbart_path}  --arch mbart_large --task translation_from_pretrained_bart  --source-lang {source_lang} --target-lang {target_lang}  --encoder-normalize-before --decoder-normalize-before --criterion label_smoothed_cross_entropy --label-smoothing 0.2  --dataset-impl mmap --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' --lr-scheduler polynomial_decay --lr 3e-05 --min-lr -1 --warmup-updates 2500 --total-num-update 40000 --dropout 0.3 --attention-dropout 0.1  --weight-decay 0.0 --max-tokens 1024 --update-freq 2 --log-format simple --log-interval 2 --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler --langs ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI
+                f'''--restore-file /home/daniely_assis20/muss-ptBR/experiments/fairseq/local_1664716867121/checkpoints/checkpoint_best.pt  --arch mbart_large --task translation_from_pretrained_bart  --source-lang {source_lang} --target-lang {target_lang}  --encoder-normalize-before --decoder-normalize-before --criterion label_smoothed_cross_entropy --label-smoothing 0.2  --dataset-impl mmap --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' --lr-scheduler polynomial_decay --lr 3e-05 --min-lr -1 --warmup-updates 2500 --total-num-update 40000 --dropout 0.3 --attention-dropout 0.1  --weight-decay 0.0 --max-tokens 1024 --update-freq 2 --log-format simple --log-interval 2 --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler --langs ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI
      --layernorm-embedding  --ddp-backend no_c10d'''
             ),
         ),  # noqa: E501
@@ -230,15 +233,15 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
 
 def get_all_baseline_rows():
     paths = {
-        ('_5f406847ddad8aea2f2a1ed19cb9c048', 'test'): (
+        ('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test'): (
             'pt',
-            get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex'),
-            [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'simple')],
+            get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'),
+            [get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'simple')],
         ),
-        ('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid'): (
+        ('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid'): (
             'pt',
-            get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'),
-            [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'simple')],
+            get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'),
+            [get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'simple')],
         )
     }
     rows = []
@@ -322,7 +325,7 @@ def get_score_rows(exp_dir, kwargs, additional_fields=None):
     rows = []
     language = get_language_from_dataset(kwargs['dataset'])
     for pred_path in exp_dir.glob('finetune_*.pred'):
-        dataset, phase = re.match(r'finetune_.+?_valid-test_(.+).pred', pred_path.name).groups()
+        dataset, phase = re.match(r'finetune_.+?_valid-test_(.+?).pred', pred_path.name).groups()
         scores = get_scores_on_dataset(pred_path, dataset, phase)
         row = {
             'language': language,

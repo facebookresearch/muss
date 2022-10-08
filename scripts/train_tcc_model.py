@@ -63,23 +63,15 @@ if __name__ == '__main__':
 
     jobs_dict = defaultdict(list)
     for exp_name, kwargs in tqdm(kwargs_dict.items()):
-        kwargs['train_kwargs']['ngpus'] = 1
-        kwargs['train_kwargs']['memory_efficient_fp16'] = True
-        kwargs['train_kwargs']['max_sentences'] = 32
-        #kwargs['train_kwargs']['max_tokens'] = 1024
-        #kwargs['train_kwargs']['update_freq'] = 100
-        #kwargs['train_kwargs']['batch_size'] = 16
         executor = get_executor(
             cluster='local',
             slurm_partition='priority',
             submit_decorators=[print_function_name, print_args, print_job_id, print_result, print_running_time],
             timeout_min=96 * 60,
-            gpus_per_node=1,
+            gpus_per_node=kwargs['train_kwargs']['ngpus'],
             nodes=1,
-            slurm_constraint='volta16gb',
+            slurm_constraint='volta32gb',
             name=exp_name,
-            cpus_per_task = 8,
-            mem_gb = 40
         )
         for i in range(1):
             job = executor.submit(fairseq_train_and_evaluate_with_parametrization, **kwargs)

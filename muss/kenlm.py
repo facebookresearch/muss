@@ -6,6 +6,7 @@
 
 from functools import lru_cache
 from pathlib import Path
+from muss.model import KenlmModel
 
 import kenlm
 from tokenizers import SentencePieceBPETokenizer
@@ -50,9 +51,14 @@ def get_kenlm_model(model_dir):
     model_file = model_dir / 'kenlm_model.arpa'
     return kenlm.Model(str(model_file))
 
+@lru_cache(maxsize=10)
+def get_kenlm_wiki_model():
+    model = KenlmModel.from_pretrained("wikipedia", "pt")
+    return model
 
-def get_kenlm_log_prob(text, model_dir, *args, **kwargs):
-    tokenizer = get_spm_tokenizer(model_dir)
-    kenlm_model = get_kenlm_model(model_dir)
-    encoded_text = ' '.join(tokenizer.encode(text).tokens)
-    return kenlm_model.score(encoded_text, *args, **kwargs)
+
+def get_kenlm_log_prob(text, *args, **kwargs):
+    #tokenizer = get_spm_tokenizer(model_dir)
+    kenlm_model = get_kenlm_wiki_model()
+    #encoded_text = ' '.join(tokenizer.encode(text).tokens)
+    return kenlm_model.get_perplexity(text)

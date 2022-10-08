@@ -37,8 +37,14 @@ Pretrained models should be downloaded automatically, but you can also find them
 [muss_es_mined](https://dl.fbaipublicfiles.com/muss/muss_es_mined.tar.gz)  
 
 ### Mine the data
+In folder muss/wikipedia donwload the file https://huggingface.co/edugp/kenlm/resolve/main/wikipedia/pt.arpa.bin
+
+```shell
+wget https://huggingface.co/edugp/kenlm/resolve/main/wikipedia/pt.arpa.bin
+```
+
 ```python
-python scripts/mine_sequences.py
+python3 scripts/mine_sequences.py
 ```
 
 ### Train the model

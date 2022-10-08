@@ -57,19 +57,8 @@ def has_too_much_punctuation(text):
 
 def has_low_lm_prob(text, language):
     # The slope is the linear coefficient that links the log probability and the length of the sentence in characters
-    model_dir, slope = {
-        'en': (RESOURCES_DIR / 'models/language_models/kenlm_enwiki', -0.6),
-        'fr': (RESOURCES_DIR / 'models/language_models/kenlm_frwiki', -0.6),
-        'es': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_es', -0.8),
-        'pt': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_pt', -0.8),
-        'it': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_it', -0.8),
-    }[language]
-    if not model_dir.exists():
-        print(
-            f'WARNING: no kenlm language model found for {language}, you need to train your own (see https://github.com/kpu/kenlm). Skipping language model filtering.'  # noqa: E501
-        )
-        return False
-    return get_kenlm_log_prob(text, model_dir) / len(text) < slope
+    slope = -0.8
+    return get_kenlm_log_prob(text) / len(text) < slope
 
 
 def sentence_tokenize_document(document, language):
@@ -79,7 +68,7 @@ def sentence_tokenize_document(document, language):
     # Filter out sentences (too short, too much punctuation, low lm prob)
     sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
-    # sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
+    #sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
     return sentences
 
 

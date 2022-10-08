@@ -23,7 +23,7 @@ def get_laser_embeddings(
     bpe_codes_path=BPE_CODES_PATH,
     encoder_path=ENCODER_PATH,
     language='en',
-    max_tokens=12000,
+    max_tokens=6000,
     normalize_l2=False,
     n_encoding_jobs=10,
 ):
@@ -42,22 +42,21 @@ def get_laser_embeddings(
 
     input_filepath = get_temp_filepath()
     write_lines(sentences, input_filepath)
-    with mute():
-        with log_action('Tokenizing and applying BPE'):
-            parallel_file_encoder = get_parallel_file_preprocessor(
-                lambda input_filepath, output_filepath: encode_file(
-                    input_filepath, output_filepath, language, bpe_codes_path
-                ),
-                n_jobs=n_encoding_jobs,
-            )
-            bpe_filepath = get_temp_filepath()
-            parallel_file_encoder(input_filepath, bpe_filepath)
-        with log_action('Geting LASER embedding'):
-            encoder = get_laser_encoder(encoder_path, max_tokens=max_tokens)
-            embeddings = encoder.encode_sentences(read_lines(bpe_filepath))
-            input_filepath.unlink()
-            bpe_filepath.unlink()
-            assert embeddings.shape[0] == len(sentences)
+    with log_action('Tokenizing and applying BPE'):
+        parallel_file_encoder = get_parallel_file_preprocessor(
+            lambda input_filepath, output_filepath: encode_file(
+                input_filepath, output_filepath, language, bpe_codes_path
+            ),
+            n_jobs=n_encoding_jobs,
+        )
+        bpe_filepath = get_temp_filepath()
+        parallel_file_encoder(input_filepath, bpe_filepath)
+    with log_action('Geting LASER embedding'):
+        encoder = get_laser_encoder(encoder_path, max_tokens=max_tokens)
+        embeddings = encoder.encode_sentences(read_lines(bpe_filepath))
+        input_filepath.unlink()
+        bpe_filepath.unlink()
+        assert embeddings.shape[0] == len(sentences)
     del encoder
     if normalize_l2:
         embeddings = embeddings / np.expand_dims(np.linalg.norm(embeddings, axis=1), axis=1)

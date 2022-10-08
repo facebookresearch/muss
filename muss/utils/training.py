@@ -7,6 +7,7 @@
 from functools import wraps
 
 import torch
+import torch.multiprocessing
 
 
 def print_function_name(func):
@@ -56,6 +57,7 @@ def print_result(func):
 def clear_cuda_cache(func):
     @wraps(func)  # To preserve the name and path for pickling purposes
     def wrapped_func(*args, **kwargs):
+        torch.multiprocessing.set_sharing_strategy('file_system')
         try:
             return func(*args, **kwargs)
         finally:

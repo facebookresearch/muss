@@ -41,8 +41,8 @@ language = 'pt' #input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
-slurm_partition = 'dev,scavenge'
-slurm_array_parallelism = 1024
+slurm_partition = 'debug'
+slurm_array_parallelism = 8
 
 # Split CCNet shards into subshards
 with log_action('Splitting CCNet shards into smaller subshards'):
@@ -50,7 +50,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     n_shards = {  # Number of shards to take for each languages for ~1B sentences
         'en': 15,
         'fr': 25,
-        'pt': 10,
+        'pt': 4,
         'es': 13,  # We would need about 20 shards for 1B sentences, but there are only 13
     }[language]
     ccnet_filepaths = [ccnet_dir / f'{language}_head_{i:04d}.json.gz' for i in range(n_shards)]
@@ -58,7 +58,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     raw_original_dir.mkdir(exist_ok=True, parents=True)
     output_dirs = [raw_original_dir / f'{language}_head_{i:04d}' for i in range(n_shards)]
     n_docs_per_file = 50000
-    executor = get_executor(cluster=cluster, slurm_partition='dev', timeout_min=1 * 30, slurm_array_parallelism=16)
+    executor = get_executor(cluster=cluster, slurm_partition='debug', timeout_min=1 * 30, slurm_array_parallelism=16)
     jobs = []
     with executor.batch():
         for ccnet_filepath, output_dir in zip(ccnet_filepaths, output_dirs):
@@ -91,14 +91,17 @@ with log_action('Tokenizing sentences'):
     print([job.job_id for job in jobs])
     [job.result() for job in tqdm(jobs)]
 
+print("Sentenças tokenizadas")
+
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=3000, language=language, n_encoding_jobs=5
+    sentences, max_tokens=800, language=language, n_encoding_jobs=8
 )  # noqa: E731
 
 # Create base index
+print("Criando base index...")
 with log_action('Creating base index'):
-    n_train_sentences = 10 ** 6 # 10 ** 7
+    n_train_sentences =  2 * (10 ** 6)
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
@@ -115,6 +118,7 @@ with log_action('Creating base index'):
         train_sentences, get_index_name(), get_embeddings, faiss.METRIC_L2, base_index_dir
     )
 
+print("Computando embeddings...")
 # Compute embeddings
 with log_action('Computing embeddings'):
     cache_dir = get_cache_dir(dataset_dir) / embeddings_type_name
@@ -136,6 +140,7 @@ with log_action('Computing embeddings'):
             compute_and_save_embeddings(sentences_path, base_index_path, get_embeddings, indexes_dir=indexes_dir)
 
 # Mine the paraphrases
+print("Minerando parafrases...")
 with log_action('Mining paraphrases'):
     nn_search_results_dir = cache_dir / 'nn_search_results'
     nn_search_results_dir.mkdir(exist_ok=True, parents=True)
@@ -147,9 +152,11 @@ with log_action('Mining paraphrases'):
         timeout_min=2 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
+    print("Iniciando fase de mineração de paráfrases")
     # Run NN search query file by query file
     with executor.batch():
         for query_sentences_path in tqdm(query_sentences_paths, desc='submitting queries'):
+            print(f"Executando mineração da base {query_sentences_path}")
             if get_results_path(query_sentences_path, db_sentences_paths, topk, nprobe, nn_search_results_dir).exists():
                 continue
             # Should take about ~1h30 each
@@ -162,8 +169,10 @@ with log_action('Mining paraphrases'):
                 nn_search_results_dir,
                 delete_intermediary=True,
             )
+            print("done")
 
 # Filter candidate paraphrases
+print("Iniciando filtro de frases candidatas")
 with log_action('Filtering candidate paraphrases'):
     pairs_dir = cache_dir / 'pairs'
     pairs_dir.mkdir(exist_ok=True, parents=True)
@@ -231,6 +240,7 @@ with log_action('Filtering candidate paraphrases'):
     #print([job.job_id for job in jobs])
     #[job.result() for job in tqdm(jobs)]
 
+print("Salvando datasets...")
 with log_action('Wrapping up paraphrases'):
     simplification_pairs = get_simplification_pairs_paths(
         query_sentences_paths, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir

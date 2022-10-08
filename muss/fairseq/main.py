@@ -27,11 +27,11 @@ from muss.utils.helpers import print_running_time, add_dicts
 def check_dataset(dataset):
     # Sanity check with evaluation dataset
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex')
     ):
         warnings.warn('WARNING: Dataset has validation samples in training set!')
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')
     ):
         warnings.warn('WARNING: Dataset has test samples in training set!')
 
@@ -90,13 +90,13 @@ def get_predictions(source_path, exp_dir, **kwargs):
 
 def fairseq_evaluate(exp_dir, **kwargs):
     simplifier = fairseq_get_simplifier(exp_dir, **kwargs)
-    evaluate_kwargs = kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'})
+    evaluate_kwargs = kwargs.get('evaluate_kwargs', {'test_set': 'custom'})
     return evaluate_simplifier(simplifier, **evaluate_kwargs)
 
 
 def get_easse_report_from_exp_dir(exp_dir, **kwargs):
     simplifier = fairseq_get_simplifier(exp_dir, **kwargs)
-    return get_easse_report(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'}))
+    return get_easse_report(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'custom'}))
 
 
 def fairseq_evaluate_and_save(exp_dir, **kwargs):
@@ -106,7 +106,7 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'valid', 'complex'), get_data_filepath('_5f406847ddad8aea2f2a1ed19cb9c048', 'test', 'complex')]
+        'predict_files', [get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'), get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex'), get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'valid', 'complex'), get_data_filepath('uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0', 'test', 'complex')]
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
@@ -125,7 +125,7 @@ def find_best_parametrization_nevergrad(
         simplifier = fairseq_get_simplifier(
             exp_dir, preprocessors_kwargs=preprocessors_kwargs, generate_kwargs=kwargs.get('generate_kwargs', {})
         )
-        scores = evaluate_simplifier(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'}))
+        scores = evaluate_simplifier(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'custom'}))
         return combine_metrics(scores['bleu'], scores['sari'], scores['fkgl'], metrics_coefs)
 
     def get_parametrization(preprocessors_kwargs):
@@ -152,7 +152,7 @@ def find_best_parametrization_nevergrad(
 def find_best_parametrization_fast(exp_dir, preprocessors_kwargs, **kwargs):
     preprocessors_kwargs = preprocessors_kwargs.copy()  # We are going to modify it inplace
     preprocessors = get_preprocessors(preprocessors_kwargs)
-    orig_sents, refs_sents = get_orig_and_refs_sents(**kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'}))
+    orig_sents, refs_sents = get_orig_and_refs_sents(**kwargs.get('evaluate_kwargs', {'test_set': 'custom'}))
     features = defaultdict(list)
     for ref_sents in refs_sents:
         for orig_sent, ref_sent in zip(orig_sents, ref_sents):
@@ -192,7 +192,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
-        'pt': ['_5f406847ddad8aea2f2a1ed19cb9c048']
+        'pt': ['uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0']
         # 'it': ['simpitiki']
     }[language]
 
@@ -203,8 +203,10 @@ def finetune_and_predict_on_dataset(finetuning_dataset, exp_dir, **kwargs):
     if kwargs.get('fast_parametrization_search', False):
         prefix += '_fast'
     pred_filepaths = [
-        exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_{finetuning_dataset}_valid.pred',
-        exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_{finetuning_dataset}_test.pred',
+        #exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_{finetuning_dataset}_valid.pred',
+        #exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_{finetuning_dataset}_test.pred',
+        exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_valid.pred',
+        exp_dir / f'{prefix}_{finetuning_dataset}_valid-test_test.pred',
     ]
     if all([path.exists() for path in pred_filepaths]):
         return
@@ -227,9 +229,12 @@ def fairseq_train_and_evaluate_with_parametrization(dataset, **kwargs):
     # Training
     exp_dir = print_running_time(fairseq_prepare_and_train)(dataset, **kwargs)
     # Find best parametrization
-    recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
-    print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
-    kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
+    #try:
+    #    recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
+    #finally:
+    #    print("Erro ao tentar encontrar a melhor parametrização")
+    #print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
+    #kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
     # Evaluation
     scores = print_running_time(fairseq_evaluate_and_save)(exp_dir, **kwargs)
     score = combine_metrics(scores['bleu'], scores['sari'], scores['fkgl'], kwargs.get('metrics_coefs', [0, 1, 0]))

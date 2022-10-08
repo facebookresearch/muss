@@ -57,7 +57,7 @@ def fairseq_preprocess(dataset, dict_path=None, source_lang='complex', target_la
             testpref = str(get_data_filepath(dataset, 'test', 'dummy')).replace('.dummy', '')
             args = f'''
                 --source-lang {source_lang} --target-lang {target_lang} --trainpref {trainpref} --validpref {validpref} --testpref {testpref}
-                --destdir {preprocessed_dir} --bpe sentencepiece
+                --destdir {preprocessed_dir}
                 --joined-dictionary --workers 32
             '''
             if dict_path is not None:
@@ -109,9 +109,9 @@ def fairseq_train(
         --lr-scheduler {lr_scheduler} --lr {lr} --warmup-updates {warmup_updates} --update-freq {update_freq}
         --arch {arch} --dropout {dropout} --weight-decay 0.0 --clip-norm 0.1 --share-all-embeddings
         --no-epoch-checkpoints --save-interval 999999 --validate-interval 999999
-        --max-update {max_update} --save-interval-updates {save_interval_updates} --keep-interval-updates 1 --patience 10
+        --max-update {max_update} --save-interval-updates {save_interval_updates} --keep-interval-updates 1 --patience 30
         --batch-size {max_sentences} --seed {seed}
-        --distributed-world-size {ngpus} --distributed-port {distributed_port}
+        --distributed-world-size {ngpus} --distributed-port {distributed_port} --reset-optimizer
         '''
         if lr_scheduler == 'inverse_sqrt':
             args += '--warmup-init-lr 1e-07'
@@ -171,7 +171,7 @@ def _fairseq_generate(
         --diverse-beam-groups {diverse_beam_groups if diverse_beam_groups is not None else -1} --diverse-beam-strength {diverse_beam_strength}
         --max-tokens {max_tokens}
         --model-overrides "{{'encoder_embed_path': None, 'decoder_embed_path': None}}"
-        --skip-invalid-size-inputs-valid-test --bpe sentencepiece
+        --skip-invalid-size-inputs-valid-test
         '''
         if sampling:
             args += f'--sampling --sampling-topk 10'
