@@ -50,7 +50,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     n_shards = {  # Number of shards to take for each languages for ~1B sentences
         'en': 15,
         'fr': 25,
-        'pt': 4,
+        'pt': 5,
         'es': 13,  # We would need about 20 shards for 1B sentences, but there are only 13
     }[language]
     ccnet_filepaths = [ccnet_dir / f'{language}_head_{i:04d}.json.gz' for i in range(n_shards)]
@@ -95,13 +95,13 @@ print("Sentenças tokenizadas")
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=800, language=language, n_encoding_jobs=8
+    sentences, max_tokens=500, language=language, n_encoding_jobs=8
 )  # noqa: E731
 
 # Create base index
 print("Criando base index...")
 with log_action('Creating base index'):
-    n_train_sentences =  2 * (10 ** 6)
+    n_train_sentences =  5 * (10 ** 6)
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
