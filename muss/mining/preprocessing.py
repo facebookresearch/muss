@@ -8,6 +8,7 @@ import json
 import gzip
 from pathlib import Path
 from string import punctuation
+import re
 
 from tqdm import tqdm
 import numpy as np
@@ -57,8 +58,12 @@ def has_too_much_punctuation(text):
 
 def has_low_lm_prob(text, language):
     # The slope is the linear coefficient that links the log probability and the length of the sentence in characters
-    slope = -0.8
-    return get_kenlm_log_prob(text) / len(text) < slope
+    perplexity = get_kenlm_log_prob(text)
+    return perplexity <= 180 or perplexity >= 1000
+
+
+def has_spelling_error(text):
+    return re.search("ãest", text) != None
 
 
 def sentence_tokenize_document(document, language):
@@ -68,7 +73,8 @@ def sentence_tokenize_document(document, language):
     # Filter out sentences (too short, too much punctuation, low lm prob)
     sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
-    #sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
+    sentences = list(filter(lambda sentence: not has_spelling_error(sentence), sentences))
+    sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
     return sentences
 
 

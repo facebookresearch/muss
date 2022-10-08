@@ -25,6 +25,7 @@ for dir_path in [DATASETS_DIR, VARIOUS_DIR, MODELS_DIR, TOOLS_DIR, TENSORBOARD_L
     dir_path.mkdir(exist_ok=True, parents=True)
 FASTTEXT_EMBEDDINGS_DIR = Path(VARIOUS_DIR) / 'fasttext-vectors/'
 LASER_DIR = TOOLS_DIR / 'LASER'
+KENLM_DIR = RESOURCES_DIR / 'models/language_models/wikipedia'
 
 LANGUAGES = ['complex', 'simple']
 PHASES = ['train', 'valid', 'test']
