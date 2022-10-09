@@ -95,13 +95,13 @@ print("Sentenças tokenizadas")
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=800, language=language, n_encoding_jobs=8
+    sentences, max_tokens=500, language=language, n_encoding_jobs=8
 )  # noqa: E731
 
 # Create base index
 print("Criando base index...")
 with log_action('Creating base index'):
-    n_train_sentences =  4 * (10 ** 6)
+    n_train_sentences =  3 * (10 ** 6)
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
