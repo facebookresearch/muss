@@ -50,7 +50,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     n_shards = {  # Number of shards to take for each languages for ~1B sentences
         'en': 15,
         'fr': 25,
-        'pt': 5,
+        'pt': 6,
         'es': 13,  # We would need about 20 shards for 1B sentences, but there are only 13
     }[language]
     ccnet_filepaths = [ccnet_dir / f'{language}_head_{i:04d}.json.gz' for i in range(n_shards)]
@@ -95,13 +95,13 @@ print("Sentenças tokenizadas")
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=500, language=language, n_encoding_jobs=8
+    sentences, max_tokens=800, language=language, n_encoding_jobs=8
 )  # noqa: E731
 
 # Create base index
 print("Criando base index...")
 with log_action('Creating base index'):
-    n_train_sentences =  5 * (10 ** 6)
+    n_train_sentences =  4 * (10 ** 6)
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
@@ -129,7 +129,7 @@ with log_action('Computing embeddings'):
     executor = get_executor(
         cluster=cluster,
         slurm_partition=slurm_partition,
-        timeout_min=2 * 60,
+        timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
     with executor.batch():
@@ -149,7 +149,7 @@ with log_action('Mining paraphrases'):
     executor = get_executor(
         cluster=cluster,
         slurm_partition=slurm_partition,
-        timeout_min=2 * 60,
+        timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
     print("Iniciando fase de mineração de paráfrases")
@@ -177,8 +177,8 @@ with log_action('Filtering candidate paraphrases'):
     pairs_dir = cache_dir / 'pairs'
     pairs_dir.mkdir(exist_ok=True, parents=True)
     filter_kwargs = {
-        'density': 0.6,
-        'distance': 0.05,
+        'density': 0.7,
+        'distance': 0.08,
         'levenshtein': 0.2,
         'simplicity': 0.0,
         'filter_ne': False,
@@ -209,7 +209,7 @@ with log_action('Filtering candidate paraphrases'):
     executor = get_executor(
         cluster=cluster,
         slurm_partition=slurm_partition,
-        timeout_min=2 * 60,
+        timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
     #with executor.batch():

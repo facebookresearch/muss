@@ -63,13 +63,13 @@ def has_low_lm_prob(text, language):
 
 
 def has_spelling_error(text):
-    return re.search("ãest|&quot|http", text) != None
+    return re.search("ãest|&quot|http|>|<", text) != None
 
 
 def sentence_tokenize_document(document, language):
     document = document.replace('\n', ' ').replace('\x00', ' ').replace('\t', ' ')
     document = normalize_punctuation(normalize_unicode(document))
-    sentences = list(yield_sentence_concatenations(document, min_length=10, max_length=300, language=language))
+    sentences = list(yield_sentence_concatenations(document, min_length=50, max_length=500, language=language))
     # Filter out sentences (too short, too much punctuation, low lm prob)
     sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
