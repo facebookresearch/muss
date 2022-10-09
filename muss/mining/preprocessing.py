@@ -71,7 +71,7 @@ def sentence_tokenize_document(document, language):
     document = normalize_punctuation(normalize_unicode(document))
     sentences = list(yield_sentence_concatenations(document, min_length=10, max_length=300, language=language))
     # Filter out sentences (too short, too much punctuation, low lm prob)
-    sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
+    sentences = list(filter(lambda sentence: len(sentence) >= 50, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
     sentences = list(filter(lambda sentence: not has_spelling_error(sentence), sentences))
     sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
