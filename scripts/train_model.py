@@ -11,20 +11,25 @@ from muss.resources.datasets import create_smaller_dataset
 import pandas as pd
 import numpy as np
 import scipy
+import argparse
 
 # This dataset should exist in resources/datasets/ and contain the following files:
 # train.complex, train.simple, valid.complex, valid.simple, test.complex, test.simple
 #prepare_wikilarge_detokenized()
 #prepare_asset()
 
-dataset = 'uts_pt_query-48dcb55bb27743aa14debf7b3f710243_db-48dcb55bb27743aa14debf7b3f710243_topk-8_nprobe-16_density-0.6_distance-0.05_filter_ne-False_levenshtein-0.2_simplicity-0.0'
-kwargs = get_mbart_kwargs(dataset=dataset, language='pt', use_access=True)
-kwargs['train_kwargs']['ngpus'] = 1
-kwargs['train_kwargs']['memory_efficient_fp16'] = True
-kwargs['train_kwargs']['max_sentences'] = 32
-kwargs['train_kwargs']['max_tokens'] = 1024
-kwargs['train_kwargs']['no_epoch_checkpoints'] = True
-#kwargs['train_kwargs']['stop_min_lr'] = 0.5
-#kwargs['train_kwargs']['update_freq'] = 100
-#kwargs['train_kwargs']['batch_size'] = 16
-result = fairseq_train_and_evaluate_with_parametrization(**kwargs)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Train muss model')
+    parser.add_argument('datasetname', type=str, help='dataset name')
+    args = parser.parse_args()
+    dataset = args.datasetname
+    print(f'Iniciando treinamento com dataset: {dataset}')
+    kwargs['train_kwargs']['ngpus'] = 1
+    kwargs['train_kwargs']['memory_efficient_fp16'] = True
+    kwargs['train_kwargs']['max_sentences'] = 32
+    kwargs['train_kwargs']['max_tokens'] = 1024
+    kwargs['train_kwargs']['no_epoch_checkpoints'] = True
+    #kwargs['train_kwargs']['stop_min_lr'] = 0.5
+    #kwargs['train_kwargs']['update_freq'] = 100
+    #kwargs['train_kwargs']['batch_size'] = 16
+    result = fairseq_train_and_evaluate_with_parametrization(**kwargs)
