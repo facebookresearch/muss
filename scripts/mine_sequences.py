@@ -247,5 +247,5 @@ with log_action('Wrapping up paraphrases'):
     )
     results_str = f'query-{get_files_hash(query_sentences_paths)}_db-{get_files_hash(db_sentences_paths)}_topk-{topk}_nprobe-{nprobe}'
     filter_str = get_filter_string_representation(filter_kwargs)
-    dataset = f'uts_{language}_{results_str}_{filter_str}'
+    dataset = f'new_uts_{language}_{results_str}_{filter_str}'
     print(combine_simplifications_in_dataset(simplification_pairs, dataset))
