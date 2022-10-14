@@ -177,8 +177,8 @@ with log_action('Filtering candidate paraphrases'):
     pairs_dir = cache_dir / 'pairs'
     pairs_dir.mkdir(exist_ok=True, parents=True)
     filter_kwargs = {
-        'density': 0.7,
-        'distance': 0.08,
+        'density': 0.6,
+        'distance': 0.05,
         'levenshtein': 0.2,
         'simplicity': 0.0,
         'filter_ne': False,
