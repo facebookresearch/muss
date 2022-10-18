@@ -27,11 +27,11 @@ from muss.utils.helpers import print_running_time, add_dicts
 def check_dataset(dataset):
     # Sanity check with evaluation dataset
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('cefet_small', 'valid', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('alector', 'valid', 'complex')
     ):
         warnings.warn('WARNING: Dataset has validation samples in training set!')
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('cefet_small', 'test', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('alector', 'test', 'complex')
     ):
         warnings.warn('WARNING: Dataset has test samples in training set!')
 
@@ -106,7 +106,7 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath('cefet_small', 'valid', 'complex'), get_data_filepath('cefet_small', 'test', 'complex')]
+        'predict_files', [get_data_filepath('alector', 'valid', 'complex'), get_data_filepath('alector', 'test', 'complex')]
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
@@ -192,7 +192,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
-        'pt': ['cefet_small']
+        'pt': ['alector']
         # 'it': ['simpitiki']
     }[language]
 
@@ -229,13 +229,13 @@ def fairseq_train_and_evaluate_with_parametrization(dataset, **kwargs):
     # Training
     exp_dir = print_running_time(fairseq_prepare_and_train)(dataset, **kwargs)
     # Find best parametrization
-    try:
-        recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
-        print("Finalizado fase de encontrar melhor parametrização.")
-    finally:
-        print("Erro ao tentar encontrar a melhor parametrização")
-    print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
-    kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
+    #try:
+    #    recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
+    #    print("Finalizado fase de encontrar melhor parametrização.")
+    #finally:
+    #    print("Erro ao tentar encontrar a melhor parametrização")
+    #print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
+    #kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
     # Evaluation
     scores = print_running_time(fairseq_evaluate_and_save)(exp_dir, **kwargs)
     score = combine_metrics(scores['bleu'], scores['sari'], scores['fkgl'], kwargs.get('metrics_coefs', [0, 1, 0]))
