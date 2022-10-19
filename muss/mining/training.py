@@ -54,11 +54,11 @@ def prepare_mbart_model():
 
 def get_access_preprocessors_kwargs(language, use_short_name=False):
     return {
-        'LengthRatioPreprocessor': {'target_ratio': 0.3, 'use_short_name': use_short_name},
-        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.4, 'use_short_name': use_short_name},
-        'WordRankRatioPreprocessor': {'target_ratio': 0.3, 'language': language, 'use_short_name': use_short_name},
+        'LengthRatioPreprocessor': {'target_ratio': 0.85, 'use_short_name': use_short_name},
+        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.8, 'use_short_name': use_short_name},
+        'WordRankRatioPreprocessor': {'target_ratio': 0.8, 'language': language, 'use_short_name': use_short_name},
         'DependencyTreeDepthRatioPreprocessor': {
-            'target_ratio': 0.65,
+            'target_ratio': 0.9,
             'language': language,
             'use_short_name': use_short_name,
         },
