@@ -27,11 +27,11 @@ from muss.utils.helpers import print_running_time, add_dicts
 def check_dataset(dataset):
     # Sanity check with evaluation dataset
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('alector', 'valid', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('cefet_large', 'valid', 'complex')
     ):
         warnings.warn('WARNING: Dataset has validation samples in training set!')
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('alector', 'test', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('cefet_large', 'test', 'complex')
     ):
         warnings.warn('WARNING: Dataset has test samples in training set!')
 
@@ -106,7 +106,7 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath('alector', 'valid', 'complex'), get_data_filepath('alector', 'test', 'complex')]
+        'predict_files', [get_data_filepath('cefet_large', 'valid', 'complex'), get_data_filepath('cefet_large', 'test', 'complex')]
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
@@ -190,9 +190,9 @@ def get_datasets_for_language(language):
     # TODO: Should be in ts.uts.training
     return {
         'en': ['asset', 'turkcorpus_detokenized'],
-        'fr': ['alector'],
+        'fr': ['cefet_large'],
         'es': ['simplext_corpus_all_fixed'],
-        'pt': ['alector']
+        'pt': ['cefet_large']
         # 'it': ['simpitiki']
     }[language]
 
