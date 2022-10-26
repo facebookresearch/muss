@@ -67,8 +67,8 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
 
 def get_predict_files(language):
     return {
-        'pt': [get_data_filepath('alector', 'valid', 'complex'),
-        get_data_filepath('alector', 'test', 'complex')]
+        'pt': [get_data_filepath('porsimples', 'valid', 'complex'),
+        get_data_filepath('porsimples', 'test', 'complex')]
     }[language]
 
 
@@ -76,13 +76,13 @@ def get_evaluate_kwargs(language, phase='valid'):
     return {
         ('pt', 'valid'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('alector', 'valid', 'complex'),
-            'refs_sents_paths': [get_data_filepath('alector', 'valid', 'simple')],
+            'orig_sents_path': get_data_filepath('porsimples', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('porsimples', 'valid', 'simple')],
         },
         ('pt', 'test'): {
             'test_set': 'custom',
-            'orig_sents_path': get_data_filepath('alector', 'test', 'complex'),
-            'refs_sents_paths': [get_data_filepath('alector', 'test', 'simple')],
+            'orig_sents_path': get_data_filepath('porsimples', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('porsimples', 'test', 'simple')],
         }
     }[(language, phase)]
 
@@ -233,15 +233,15 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
 
 def get_all_baseline_rows():
     paths = {
-        ('alector', 'test'): (
+        ('porsimples', 'test'): (
             'pt',
-            get_data_filepath('alector', 'test', 'complex'),
-            [get_data_filepath('alector', 'test', 'simple')],
+            get_data_filepath('porsimples', 'test', 'complex'),
+            [get_data_filepath('porsimples', 'test', 'simple')],
         ),
-        ('alector', 'valid'): (
+        ('porsimples', 'valid'): (
             'pt',
-            get_data_filepath('alector', 'valid', 'complex'),
-            [get_data_filepath('alector', 'valid', 'simple')],
+            get_data_filepath('porsimples', 'valid', 'complex'),
+            [get_data_filepath('porsimples', 'valid', 'simple')],
         )
     }
     rows = []
