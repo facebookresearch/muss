@@ -23,12 +23,21 @@ ALLOWED_MODEL_NAMES = [
     'muss_pt_mined'
 ]
 
-TOKENS_RATIO = {
+TOKENS_RATIO_DEFAULT = {
     "LengthRatioPreprocessor": 0.9,
-    "ReplaceOnlyLevenshteinPreprocessor": 0.65,
-    "WordRankRatioPreprocessor": 0.6,
+    "ReplaceOnlyLevenshteinPreprocessor": 0.8,
+    "WordRankRatioPreprocessor": 0.8,
     "DependencyTreeDepthRatioPreprocessor": 0.4,
 }
+
+TOKENS_RATIO_EF1 = {
+    "LengthRatioPreprocessor": 0.5,
+    "ReplaceOnlyLevenshteinPreprocessor": 0.5,
+    "WordRankRatioPreprocessor": 0.4,
+    "DependencyTreeDepthRatioPreprocessor": 0.2,
+}
+
+TOKENS_RATIO = TOKENS_RATIO_DEFAULT
 
 
 def is_model_using_mbart(model_name):

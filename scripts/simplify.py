@@ -23,6 +23,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     source_sentences = read_lines(args.filepath)
     pred_sentences = simplify_sentences(source_sentences, model_name=args.model_name)
+    print(f'Translated file: {pred_sentences}')
+    print('#' * 80 + '\n')
     for c, s in zip(source_sentences, pred_sentences):
         print('-' * 80)
         print(f'Original:   {c}')
