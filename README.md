@@ -4,7 +4,7 @@ Code and pretrained models to reproduce experiments in "MUSS: Multilingual Unsup
 
 ## Prerequisites
 
-Linux with python 3.6 or above (not compatible with python 3.9 yet). If your operating system is Windows, you can use WSL.
+Linux with python 3.6 or above (not compatible with python 3.9 yet). If your operating system is Windows, you can use WSL with ubuntu 20.04LTS. 
 
 ## Installing
 
@@ -22,6 +22,7 @@ Some scripts might still contain a few bugs, if you notice anything wrong, feel 
 ### Simplify sentences from a file using pretrained models
 
 First, download the template of the desired language in the folder `resources/models`:
+
 [muss_en_wikilarge_mined](https://dl.fbaipublicfiles.com/muss/muss_en_wikilarge_mined.tar.gz)  
 [muss_en_mined](https://dl.fbaipublicfiles.com/muss/muss_en_mined.tar.gz)  
 [muss_fr_mined](https://dl.fbaipublicfiles.com/muss/muss_fr_mined.tar.gz)  
