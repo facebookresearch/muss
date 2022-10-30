@@ -23,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('datasetname', type=str, help='dataset name')
     args = parser.parse_args()
     dataset = args.datasetname
-    kwargs = get_mbart_kwargs(dataset=dataset, language='pt', use_access=True)
+    kwargs = get_mbart_kwargs(dataset=dataset, language='pt', restore_file = None, use_access=True)
     print(f'Iniciando treinamento com dataset: {dataset}')
     kwargs['train_kwargs']['ngpus'] = 1
     kwargs['train_kwargs']['memory_efficient_fp16'] = True

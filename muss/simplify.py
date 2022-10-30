@@ -44,6 +44,13 @@ def is_model_using_mbart(model_name):
     return '_fr_' in model_name or '_es_' in model_name or '_pt_' in model_name
 
 
+def get_mbart_languages_from_model(model_name):
+    if '_pt_' in model_name:
+        return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI'  # noqa: E501
+    else:
+        return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'  # noqa: E501
+
+
 def get_model_path(model_name):
     assert model_name in ALLOWED_MODEL_NAMES
     model_path = MODELS_DIR / model_name
@@ -85,10 +92,12 @@ def simplify_sentences(source_sentences, model_name='muss_en_wikilarge_mined'):
         generate_kwargs['task'] = 'translation_from_pretrained_bart'
         generate_kwargs[
             'langs'
-        ] = 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI'  # noqa: E501
+        ] = get_mbart_languages_from_model(model_name)
     simplifier = get_fairseq_simplifier(exp_dir, **generate_kwargs)
     simplifier = get_preprocessed_simplifier(simplifier, preprocessors=preprocessors)
     source_path = get_temp_filepath()
     write_lines(source_sentences, source_path)
     pred_path = simplifier(source_path)
+    print('\n' + '#' * 80)
+    print(f'> Translated file: {pred_path}')
     return read_lines(pred_path)
