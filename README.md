@@ -4,7 +4,7 @@ Code and pretrained models to reproduce experiments in "MUSS: Multilingual Unsup
 
 ## Prerequisites
 
-Linux with python 3.6 or above (not compatible with python 3.9 yet).
+Linux with python 3.6 or above (not compatible with python 3.9 yet). If your operating system is Windows, you can use WSL.
 
 ## Installing
 
@@ -13,7 +13,7 @@ git clone git@github.com:facebookresearch/muss.git
 cd muss/
 pip install -e .  # Install package
 python -m spacy download pt_core_news_md # Install required spacy models
-ulimit -n 100000
+ulimit -n 100000 # If you train a new model
 ```
 
 ## How to use
@@ -21,6 +21,8 @@ Some scripts might still contain a few bugs, if you notice anything wrong, feel 
 
 ### Simplify sentences from a file using pretrained models
 ```python
+python scripts/simplify.py FILE_PATH_TO_SIMPLIFY --model-name MODEL_NAME
+
 # English
 python scripts/simplify.py scripts/examples.en --model-name muss_en_wikilarge_mined
 # French
@@ -36,13 +38,12 @@ Pretrained models should be downloaded automatically, but you can also find them
 [muss_en_mined](https://dl.fbaipublicfiles.com/muss/muss_en_mined.tar.gz)  
 [muss_fr_mined](https://dl.fbaipublicfiles.com/muss/muss_fr_mined.tar.gz)  
 [muss_es_mined](https://dl.fbaipublicfiles.com/muss/muss_es_mined.tar.gz)  
+[muss_pt_mined](https://drive.google.com/uc?export=download&id=1QcSHDjTtsBYSX95NvL_gefrQ2IkzpH-4)  
 
 ### Mine the data
-In folder muss/wikipedia donwload the file https://huggingface.co/edugp/kenlm/resolve/main/wikipedia/pt.arpa.bin
+In folder `resources/models/language_models/wikipedia` donwload the files of the target language from https://huggingface.co/edugp/kenlm/tree/main/wikipedia. These language models are used to filter high quality sentences in the paraphrase mining phase.
 
-```shell
-wget https://huggingface.co/edugp/kenlm/resolve/main/wikipedia/pt.arpa.bin
-```
+To run paraphrase mining run the command below:
 
 ```python
 python3 scripts/mine_sequences.py
@@ -50,7 +51,7 @@ python3 scripts/mine_sequences.py
 
 ### Train the model
 ```python
-python scripts/train_model.py
+python scripts/train_model.py NAME_OF_DATASET
 ```
 
 ### Evaluate simplifications
