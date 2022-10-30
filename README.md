@@ -20,6 +20,15 @@ ulimit -n 100000 # If you train a new model
 Some scripts might still contain a few bugs, if you notice anything wrong, feel free to open an issue or submit a Pull Request.
 
 ### Simplify sentences from a file using pretrained models
+
+First, download the template of the desired language in the folder `resources/models`:
+[muss_en_wikilarge_mined](https://dl.fbaipublicfiles.com/muss/muss_en_wikilarge_mined.tar.gz)  
+[muss_en_mined](https://dl.fbaipublicfiles.com/muss/muss_en_mined.tar.gz)  
+[muss_fr_mined](https://dl.fbaipublicfiles.com/muss/muss_fr_mined.tar.gz)  
+[muss_es_mined](https://dl.fbaipublicfiles.com/muss/muss_es_mined.tar.gz)  
+[muss_pt_mined](https://drive.google.com/uc?export=download&id=1QcSHDjTtsBYSX95NvL_gefrQ2IkzpH-4) 
+
+Then run the command:
 ```python
 python scripts/simplify.py FILE_PATH_TO_SIMPLIFY --model-name MODEL_NAME
 
@@ -31,14 +40,7 @@ python scripts/simplify.py scripts/examples.fr --model-name muss_fr_mined
 python scripts/simplify.py scripts/examples.es --model-name muss_es_mined
 # Portuguese
 python scripts/simplify.py scripts/examples.pt --model-name muss_pt_mined
-```
-
-Pretrained models should be downloaded automatically, but you can also find them here:  
-[muss_en_wikilarge_mined](https://dl.fbaipublicfiles.com/muss/muss_en_wikilarge_mined.tar.gz)  
-[muss_en_mined](https://dl.fbaipublicfiles.com/muss/muss_en_mined.tar.gz)  
-[muss_fr_mined](https://dl.fbaipublicfiles.com/muss/muss_fr_mined.tar.gz)  
-[muss_es_mined](https://dl.fbaipublicfiles.com/muss/muss_es_mined.tar.gz)  
-[muss_pt_mined](https://drive.google.com/uc?export=download&id=1QcSHDjTtsBYSX95NvL_gefrQ2IkzpH-4)  
+``` 
 
 ### Mine the data
 In folder `resources/models/language_models/wikipedia` donwload the files of the target language from https://huggingface.co/edugp/kenlm/tree/main/wikipedia. These language models are used to filter high quality sentences in the paraphrase mining phase.
