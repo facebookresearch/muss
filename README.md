@@ -9,7 +9,8 @@ Linux with python 3.6 or above (not compatible with python 3.9 yet). If your ope
 ## Installing
 
 ```
-git clone git@github.com:facebookresearch/muss.git
+git clone https://github.com/AssisRaphael/muss-ptBR.git
+git checkout remotes/origin/feat/add-portuguese-support
 cd muss/
 pip install -e .  # Install package
 python -m spacy download pt_core_news_md # Install required spacy models
