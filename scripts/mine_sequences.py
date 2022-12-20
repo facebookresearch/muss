@@ -36,8 +36,12 @@ from muss.mining.nn_search import (
 )
 from muss.mining.filtering import SimplicityScorer
 
-ccnet_dir = Path('/home/raphael')
-language = 'pt' #input('What language do you want to process? (en/fr/es/pt): ')
+ccnet_dir = Path(
+    input(
+        'Please download the CCNet corpus from https://github.com/facebookresearch/cc_net and enter the path to the downloaded data: '
+    )
+)
+language = input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
@@ -91,17 +95,14 @@ with log_action('Tokenizing sentences'):
     print([job.job_id for job in jobs])
     [job.result() for job in tqdm(jobs)]
 
-print("Sentenças tokenizadas")
-
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=500, language=language, n_encoding_jobs=8
+    sentences, max_tokens=1000, language=language, n_encoding_jobs=8
 )  # noqa: E731
 
 # Create base index
-print("Criando base index...")
 with log_action('Creating base index'):
-    n_train_sentences =  3 * (10 ** 6)
+    n_train_sentences =  10 ** 7
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
@@ -118,7 +119,6 @@ with log_action('Creating base index'):
         train_sentences, get_index_name(), get_embeddings, faiss.METRIC_L2, base_index_dir
     )
 
-print("Computando embeddings...")
 # Compute embeddings
 with log_action('Computing embeddings'):
     cache_dir = get_cache_dir(dataset_dir) / embeddings_type_name
@@ -140,7 +140,6 @@ with log_action('Computing embeddings'):
             compute_and_save_embeddings(sentences_path, base_index_path, get_embeddings, indexes_dir=indexes_dir)
 
 # Mine the paraphrases
-print("Minerando parafrases...")
 with log_action('Mining paraphrases'):
     nn_search_results_dir = cache_dir / 'nn_search_results'
     nn_search_results_dir.mkdir(exist_ok=True, parents=True)
@@ -152,11 +151,9 @@ with log_action('Mining paraphrases'):
         timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    print("Iniciando fase de mineração de paráfrases")
     # Run NN search query file by query file
     with executor.batch():
         for query_sentences_path in tqdm(query_sentences_paths, desc='submitting queries'):
-            print(f"Executando mineração da base {query_sentences_path}")
             if get_results_path(query_sentences_path, db_sentences_paths, topk, nprobe, nn_search_results_dir).exists():
                 continue
             # Should take about ~1h30 each
@@ -169,10 +166,8 @@ with log_action('Mining paraphrases'):
                 nn_search_results_dir,
                 delete_intermediary=True,
             )
-            print("done")
 
 # Filter candidate paraphrases
-print("Iniciando filtro de frases candidatas")
 with log_action('Filtering candidate paraphrases'):
     pairs_dir = cache_dir / 'pairs'
     pairs_dir.mkdir(exist_ok=True, parents=True)
@@ -212,40 +207,37 @@ with log_action('Filtering candidate paraphrases'):
         timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    #with executor.batch():
-    for query_sentences_path in tqdm(query_sentences_paths, desc='query'):
-        simplification_pairs_path = get_pairs_path(
-            query_sentences_path, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir
-        )
-        if simplification_pairs_path.exists():
-            continue
-        # Should take ~10 minutes
-        job = executor.submit(
-            compute_and_save_simplification_pairs,
-            query_sentences_path=query_sentences_path,
-            db_sentences_paths=db_sentences_paths,
-            base_index_path=base_index_path,
-            cache_dir=cache_dir,
-            pairs_dir=pairs_dir,
-            get_embeddings=get_embeddings,
-            topk=topk,
-            nprobe=nprobe,
-            language=language,
-            filter_kwargs=filter_kwargs,
-            is_simpler=is_simpler,
-        )
-        print(f"Starting job with pid: {job.job_id}")
-        job.result()
-        #jobs.append(job)
-    #print([job.job_id for job in jobs])
-    #[job.result() for job in tqdm(jobs)]
+    with executor.batch():
+        for query_sentences_path in tqdm(query_sentences_paths, desc='query'):
+            simplification_pairs_path = get_pairs_path(
+                query_sentences_path, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir
+            )
+            if simplification_pairs_path.exists():
+                continue
+            # Should take ~10 minutes
+            job = executor.submit(
+                compute_and_save_simplification_pairs,
+                query_sentences_path=query_sentences_path,
+                db_sentences_paths=db_sentences_paths,
+                base_index_path=base_index_path,
+                cache_dir=cache_dir,
+                pairs_dir=pairs_dir,
+                get_embeddings=get_embeddings,
+                topk=topk,
+                nprobe=nprobe,
+                language=language,
+                filter_kwargs=filter_kwargs,
+                is_simpler=is_simpler,
+            )
+            jobs.append(job)
+    print([job.job_id for job in jobs])
+    [job.result() for job in tqdm(jobs)]
 
-print("Salvando datasets...")
 with log_action('Wrapping up paraphrases'):
     simplification_pairs = get_simplification_pairs_paths(
         query_sentences_paths, db_sentences_paths, topk, nprobe, filter_kwargs, pairs_dir
     )
     results_str = f'query-{get_files_hash(query_sentences_paths)}_db-{get_files_hash(db_sentences_paths)}_topk-{topk}_nprobe-{nprobe}'
     filter_str = get_filter_string_representation(filter_kwargs)
-    dataset = f'new_uts_{language}_{results_str}_{filter_str}'
+    dataset = f'uts_{language}_{results_str}_{filter_str}'
     print(combine_simplifications_in_dataset(simplification_pairs, dataset))

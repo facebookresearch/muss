@@ -21,15 +21,15 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train muss model')
     parser.add_argument('datasetname', type=str, help='dataset name')
+    parser.add_argument('language', type=str, help='language target')
     args = parser.parse_args()
     dataset = args.datasetname
-    kwargs = get_mbart_kwargs(dataset=dataset, language='pt', restore_file = None, use_access=True)
-    print(f'Iniciando treinamento com dataset: {dataset}')
+    kwargs = get_mbart_kwargs(dataset=dataset, language=args.language, restore_file_path = None, use_access=True)
     kwargs['train_kwargs']['ngpus'] = 1
     kwargs['train_kwargs']['memory_efficient_fp16'] = True
     kwargs['train_kwargs']['max_sentences'] = 32
     kwargs['train_kwargs']['max_tokens'] = 1024
-    kwargs['train_kwargs']['no_epoch_checkpoints'] = True
+    #kwargs['train_kwargs']['no_epoch_checkpoints'] = True
     #kwargs['train_kwargs']['stop_min_lr'] = 0.5
     #kwargs['train_kwargs']['update_freq'] = 100
     #kwargs['train_kwargs']['batch_size'] = 16

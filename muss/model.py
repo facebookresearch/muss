@@ -1,4 +1,4 @@
-# Import from https://huggingface.co/edugp/kenlm/blob/main/model.py
+# Imported from https://huggingface.co/edugp/kenlm/blob/main/model.py
 import os
 import re
 import unicodedata

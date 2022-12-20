@@ -212,13 +212,13 @@ def get_mbart_languages_from_model(language):
         return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'  # noqa: E501
 
 
-def get_mbart_kwargs(dataset, language, use_access, restore_file = None, use_short_name=False):
+def get_mbart_kwargs(dataset, language, use_access, restore_file_path = None, use_short_name=False):
     mbart_dir = prepare_mbart_model(language)
 
-    if restore_file is None:
+    if restore_file_path is None:
         mbart_path = mbart_dir / 'model.pt'
     else:
-        mbart_path = restore_file
+        mbart_path = restore_file_path
 
     source_lang = 'complex'
     target_lang = 'simple'

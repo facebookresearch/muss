@@ -1,0 +1,1 @@
+The texts present in this folder originate from the [Alector project](https://corpusalector.huma-num.fr/) and were obtained from the repository https://github.com/psawa/alector_corpus.

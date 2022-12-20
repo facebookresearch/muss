@@ -1,0 +1,1 @@
+The texts present in this folder originate from the [PorSimples project](http://wwatana.be/educational-facilita/index.html) and were obtained from the repository https://github.com/sidleal/porsimplessent.
