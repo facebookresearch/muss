@@ -44,7 +44,7 @@ python scripts/simplify.py scripts/examples.pt --model-name muss_pt_mined
 ``` 
 
 ### Mine the data
-In folder `resources/models/language_models/wikipedia` donwload the files of the target language from https://huggingface.co/edugp/kenlm/tree/main/wikipedia. These language models are used to filter high quality sentences in the paraphrase mining phase.
+If you are going to add a new language to this project, in folder `resources/models/language_models/wikipedia` donwload the files of the target language from https://huggingface.co/edugp/kenlm/tree/main/wikipedia. These language models are used to filter high quality sentences in the paraphrase mining phase.
 
 To run paraphrase mining run the command below:
 
@@ -54,7 +54,7 @@ python3 scripts/mine_sequences.py
 
 ### Train the model
 ```python
-python scripts/train_model.py NAME_OF_DATASET LANGUAGE
+python scripts/train_model.py NAME_OF_DATASET --language LANGUAGE
 ```
 
 ### Evaluate simplifications

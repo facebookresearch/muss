@@ -179,7 +179,7 @@ No arquivo `scripts/train_model.py`, a princípio não será necessário modific
 Feito isso basta executar o comando:
 
 ```bash
-nohup python3 scripts/train_model.py NAME_OF_DATASET LANGUAGE_OF_TRANNING &
+nohup python3 scripts/train_model.py NAME_OF_DATASET --language LANGUAGE_OF_TRANNING &
 ```
 
 O treinamento do modelo em português durou 18 horas.

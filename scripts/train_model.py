@@ -21,7 +21,7 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train muss model')
     parser.add_argument('datasetname', type=str, help='dataset name')
-    parser.add_argument('language', type=str, help='language target')
+    parser.add_argument('--language', type=str, help='language target')
     args = parser.parse_args()
     dataset = args.datasetname
     kwargs = get_mbart_kwargs(dataset=dataset, language=args.language, restore_file_path = None, use_access=True)

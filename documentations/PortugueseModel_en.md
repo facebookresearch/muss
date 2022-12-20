@@ -30,7 +30,7 @@ After creating and starting the VM, you need to clone the project from Github an
 8. Clone the code from Github: `git clone git@github.com:facebookresearch/muss.git`
 9. Navigate to the project folder: `cd muss/`
 10. Execute `pip install -e .`
-11. Follow  [this tutorial](https://cloud.google.com/compute/docs/gpus/install-drivers-gpu?hl=pt-br#verify-driver-install)to install GPU drivers on VM.
+11. Follow  [this tutorial](https://cloud.google.com/compute/docs/gpus/install-drivers-gpu?hl=pt-br#verify-driver-install) to install GPU drivers on VM.
 12. Follow  [this tutorial](https://cloud.google.com/compute/docs/gpus/monitor-gpus#use-virtualenv_1) to configure GPU telemetry on the VM so you can monitor its performance while running model trainings.
 13. pload the files with the text corpus to the VM. See [this tutorial](https://cloud.google.com/compute/docs/instances/transfer-files?hl=pt-br#upload-to-the-vm) on how to send and receive files to the VM. The folder where the files will be saved doesn't matter (by default it's a folder with your username in \home), because muss takes the path as a parameter.
 
@@ -68,7 +68,7 @@ He died there six weeks later, on January 13, 888.
 They are similar to the people of Papua New Guinea who live on the coast.
 ```
 
-To start this phase, it is necessary to obtain a database of texts to produce the training paraphrases. The original project used texts mined by the [ccnet](https://github.com/facebookresearch/cc_net)program , which mines Common Crawl texts. We recommend using it to extract these texts, as it guarantees that the collected texts will be of high quality. However, its use is not mandatory. muss just expects the format of the input texts to be similar to the shards that ccnet generates.
+To start this phase, it is necessary to obtain a database of texts to produce the training paraphrases. The original project used texts mined by the [ccnet](https://github.com/facebookresearch/cc_net) program , which mines Common Crawl texts. We recommend using it to extract these texts, as it guarantees that the collected texts will be of high quality. However, its use is not mandatory. muss just expects the format of the input texts to be similar to the shards that ccnet generates.
 
 The format of the paraphrase mining script input files is a set of line-separated JSONs, with the last line of the file being empty. Each JSON needs to contain the field `raw_content` with the text that must be processed. ccnet provides more data than this, but muss only expects this field.
 
@@ -179,7 +179,7 @@ In the file `scripts/train_model.py`, at first it will not be necessary to modif
 Once that's done, just run the command:
 
 ```bash
-nohup python3 scripts/train_model.py NAME_OF_DATASET LANGUAGE_OF_TRANNING &
+nohup python3 scripts/train_model.py NAME_OF_DATASET --language LANGUAGE_OF_TRANNING &
 ```
 
 Model training in Portuguese lasted 18 hours.
