@@ -51,14 +51,21 @@ def get_kenlm_model(model_dir):
     model_file = model_dir / 'kenlm_model.arpa'
     return kenlm.Model(str(model_file))
 
+
+def get_kenlm_log_prob(text, model_dir, *args, **kwargs):
+    tokenizer = get_spm_tokenizer(model_dir)
+    kenlm_model = get_kenlm_model(model_dir)
+    encoded_text = ' '.join(tokenizer.encode(text).tokens)
+    return kenlm_model.score(encoded_text, *args, **kwargs)
+
+# Adaptation of the kenlm model from the repository https://huggingface.co/edugp/kenlm
+
 @lru_cache(maxsize=10)
-def get_kenlm_wiki_model():
-    model = KenlmModel.from_pretrained(KENLM_DIR, "pt")
+def get_kenlm_wiki_model(language):
+    model = KenlmModel.from_pretrained(KENLM_DIR, language)
     return model
 
 
-def get_kenlm_log_prob(text, *args, **kwargs):
-    #tokenizer = get_spm_tokenizer(model_dir)
-    kenlm_model = get_kenlm_wiki_model()
-    #encoded_text = ' '.join(tokenizer.encode(text).tokens)
+def get_kenlm_wiki_log_prob(text, language, *args, **kwargs):
+    kenlm_model = get_kenlm_wiki_model(language)
     return kenlm_model.get_perplexity(text)

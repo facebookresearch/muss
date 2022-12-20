@@ -10,7 +10,6 @@ Linux with python 3.6 or above (not compatible with python 3.9 yet). If your ope
 
 ```
 git clone https://github.com/AssisRaphael/muss-ptBR.git
-git checkout remotes/origin/feat/add-portuguese-support
 cd muss/
 pip install -e .  # Install package
 python -m spacy download pt_core_news_md # Install required spacy models
@@ -55,7 +54,7 @@ python3 scripts/mine_sequences.py
 
 ### Train the model
 ```python
-python scripts/train_model.py NAME_OF_DATASET
+python scripts/train_model.py NAME_OF_DATASET LANGUAGE
 ```
 
 ### Evaluate simplifications
