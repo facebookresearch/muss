@@ -14,7 +14,7 @@ A infraestrutura utilizada foi a seguinte:
 
 Máquina com 8 vCPUs, 52 GB de memória (n1-highmem-8), 2 TB de HDD (disco de inicialização) e 1 GPU NVIDIA Tesla T4. O sistema operacional utilizado foi o Ubuntu 20.04 LTS para arquitetura x86 de 64 bits. Essa configuração resulta em um custo de US$ 0,69 por hora.
 
-Obs: O disco de inicialização não precisa possuir tanto volume de armazenamento. É possível economizar ainda mais utilizando um disco separado para manter os dados da VM e utilizar um disco de inicialização de uns 10Gb. Você pode ver mais detalhes sobre isso [nestes tutorial](https://cloud.google.com/compute/docs/disks/add-persistent-disk?hl=pt-br). Entretanto, ao utilizar um disco de inicialização com bastante volume de armazenamento há menos configurações para realizar na VM. 
+Obs: O disco de inicialização não precisa possuir tanto volume de armazenamento. É possível economizar ainda mais utilizando um disco separado para manter os dados da VM e utilizar um disco de inicialização de uns 10Gb. Você pode ver mais detalhes sobre isso [neste tutorial](https://cloud.google.com/compute/docs/disks/add-persistent-disk?hl=pt-br). Entretanto, ao utilizar um disco de inicialização com bastante volume de armazenamento há menos configurações para realizar na VM. 
 
 ## Configuração do projeto na VM
 
@@ -38,7 +38,7 @@ Após realizar todos os passos acima, a VM estará configurada e pronta para o u
 
 ## Adaptando o muss para um novo idioma
 
-O Multilingual Unsupervised Sentence Simplification ****(MUSS) é um modelo de linguagem baseado em BART e mBART que realiza simplificação textual. Neste projeto, há tanto scripts para produzir uma base de dados de paráfrases para o treinamento do modelo quanto scripts para treinar e avaliar o modelo.
+O Multilingual Unsupervised Sentence Simplification (MUSS) é um modelo de linguagem baseado em BART e mBART que realiza simplificação textual. Neste projeto, há tanto scripts para produzir uma base de dados de paráfrases para o treinamento do modelo quanto scripts para treinar e avaliar o modelo.
 
 ### Fase de mineração de paráfrases
 
