@@ -68,6 +68,7 @@ The MUSS license is CC-BY-NC. See the [LICENSE](LICENSE) file for more details.
 ## Authors
 
 * **Louis Martin** ([louismartincs@gmail.com](mailto:louismartincs@gmail.com))
+* **Raphael Assis** ([contato.raphael.assis@gmail.com](mailto:contato.raphael.assis@gmail.com))
 
 
 ## Citation
