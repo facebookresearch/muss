@@ -9,10 +9,10 @@ Linux with python 3.6 or above (not compatible with python 3.9 yet). If your ope
 ## Installing
 
 ```
-git clone https://github.com/AssisRaphael/muss-ptBR.git
+git clone git@github.com:facebookresearch/muss.git
 cd muss/
 pip install -e .  # Install package
-python -m spacy download pt_core_news_md # Install required spacy models
+python -m spacy download pt_core_news_md en_core_web_md fr_core_news_md es_core_news_md # Install required spacy models
 ulimit -n 100000 # If you train a new model
 ```
 
@@ -21,7 +21,7 @@ Some scripts might still contain a few bugs, if you notice anything wrong, feel 
 
 ### Simplify sentences from a file using pretrained models
 
-First, download the template of the desired language in the folder `resources/models`:
+First, download the template of the desired language in the folder `resources/models`. Pretrained models should be downloaded automatically, but you can also find them here:
 
 [muss_en_wikilarge_mined](https://dl.fbaipublicfiles.com/muss/muss_en_wikilarge_mined.tar.gz)  
 [muss_en_mined](https://dl.fbaipublicfiles.com/muss/muss_en_mined.tar.gz)  
@@ -49,7 +49,7 @@ If you are going to add a new language to this project, in folder `resources/mod
 To run paraphrase mining run the command below:
 
 ```python
-python3 scripts/mine_sequences.py
+python scripts/mine_sequences.py
 ```
 
 ### Train the model

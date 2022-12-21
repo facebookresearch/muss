@@ -13,7 +13,7 @@ from muss.resources.paths import get_dataset_dir
 
 
 # Create index
-language = 'pt'
+language = 'en'
 n_train_sentences = 1000000
 train_sentences = []
 for sentences_path in get_sentences_paths(language='en'):
@@ -24,7 +24,7 @@ for sentences_path in get_sentences_paths(language='en'):
     if len(train_sentences) == n_train_sentences:
         break
 
-get_embeddings = lambda sentences: get_laser_embeddings(sentences, max_tokens=1000, language=language)  # noqa: E731
+get_embeddings = lambda sentences: get_laser_embeddings(sentences, max_tokens=3000, language=language)  # noqa: E731
 output_dir = get_dataset_dir('uts') / f'base_indexes/laser_{language}'
 output_dir.mkdir(exist_ok=True)
 create_base_index(train_sentences, get_index_name(), get_embeddings, faiss.METRIC_INNER_PRODUCT, output_dir)

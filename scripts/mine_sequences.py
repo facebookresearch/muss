@@ -46,7 +46,7 @@ cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
 slurm_partition = 'debug'
-slurm_array_parallelism = 8
+slurm_array_parallelism = 1024
 
 # Split CCNet shards into subshards
 with log_action('Splitting CCNet shards into smaller subshards'):
@@ -137,7 +137,12 @@ with log_action('Computing embeddings'):
             if get_index_path(sentences_path, indexes_dir).exists():
                 continue
             # Should take about 30 minutes each
-            compute_and_save_embeddings(sentences_path, base_index_path, get_embeddings, indexes_dir=indexes_dir)
+            job = executor.submit(
+                compute_and_save_embeddings, sentences_path, base_index_path, get_embeddings, indexes_dir=indexes_dir
+            )
+            jobs.append(job)
+    print([job.job_id for job in jobs])
+    [job.result() for job in tqdm(jobs)]
 
 # Mine the paraphrases
 with log_action('Mining paraphrases'):
@@ -157,7 +162,8 @@ with log_action('Mining paraphrases'):
             if get_results_path(query_sentences_path, db_sentences_paths, topk, nprobe, nn_search_results_dir).exists():
                 continue
             # Should take about ~1h30 each
-            compute_and_save_nn_batched(
+            job = executor.submit(
+                compute_and_save_nn_batched,
                 query_sentences_path,
                 db_sentences_paths,
                 topk,
@@ -166,6 +172,9 @@ with log_action('Mining paraphrases'):
                 nn_search_results_dir,
                 delete_intermediary=True,
             )
+            jobs.append(job)
+    print([job.job_id for job in jobs])
+    [job.result() for job in tqdm(jobs)]
 
 # Filter candidate paraphrases
 with log_action('Filtering candidate paraphrases'):

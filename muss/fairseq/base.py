@@ -109,7 +109,7 @@ def fairseq_train(
         --lr-scheduler {lr_scheduler} --lr {lr} --warmup-updates {warmup_updates} --update-freq {update_freq}
         --arch {arch} --dropout {dropout} --weight-decay 0.0 --clip-norm 0.1 --share-all-embeddings
         --no-epoch-checkpoints --save-interval 999999 --validate-interval 999999
-        --max-update {max_update} --save-interval-updates {save_interval_updates} --keep-interval-updates 1 --patience 1
+        --max-update {max_update} --save-interval-updates {save_interval_updates} --keep-interval-updates 1 --patience 10
         --batch-size {max_sentences} --seed {seed}
         --distributed-world-size {ngpus} --distributed-port {distributed_port} --reset-optimizer
         '''
