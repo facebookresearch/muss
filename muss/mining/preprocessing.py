@@ -8,7 +8,6 @@ import json
 import gzip
 from pathlib import Path
 from string import punctuation
-import re
 
 from tqdm import tqdm
 import numpy as np
@@ -27,7 +26,7 @@ def yield_json_documents_from_compressed(compressed_path):
         yield json.loads(document)
 
 
-def split_ccnet_shard(shard_path, output_dir, n_docs_per_subshard=5000):
+def split_ccnet_shard(shard_path, output_dir, n_docs_per_subshard=10000):
     '''We need to split the shards even more for the embeddings to fit in memory'''
 
     def write_lines_to_compressed_file(lines, compressed_filepath):
@@ -84,7 +83,7 @@ def sentence_tokenize_document(document, language):
     document = normalize_punctuation(normalize_unicode(document))
     sentences = list(yield_sentence_concatenations(document, min_length=10, max_length=300, language=language))
     # Filter out sentences (too short, too much punctuation, low lm prob)
-    sentences = list(filter(lambda sentence: len(sentence) >= 50, sentences))
+    sentences = list(filter(lambda sentence: len(sentence) >= 30, sentences))
     sentences = list(filter(lambda sentence: not has_too_much_punctuation(sentence), sentences))
     sentences = list(filter(lambda sentence: not has_low_lm_prob(sentence, language), sentences))
     return sentences
@@ -115,14 +114,13 @@ def get_n_cells(n_total_samples):
 
 
 def get_index_name():
-    # n_total_samples = int(1e9)
-    n_total_samples = int(1e8)
+    n_total_samples = int(1e9)
     n_cells = get_n_cells(n_total_samples)
     sq_size = 8
     pca_dim = 512
     embeddings_dim = 1024
     index_size = (n_total_samples * embeddings_dim * 4) / (32 / sq_size) / (embeddings_dim / pca_dim)
-    print(f'Expected index size: {index_size // 1e8}GB')
+    print(f'Expected index size: {index_size // 1e9}GB')
     return f'PCAR{pca_dim},IVF{n_cells},SQ{sq_size}'
 
 

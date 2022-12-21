@@ -72,11 +72,11 @@ def get_mbart_download_url(language):
 
 def get_access_preprocessors_kwargs(language, use_short_name=False):
     return {
-        'LengthRatioPreprocessor': {'target_ratio': 0.85, 'use_short_name': use_short_name},
+        'LengthRatioPreprocessor': {'target_ratio': 0.8, 'use_short_name': use_short_name},
         'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': 0.8, 'use_short_name': use_short_name},
         'WordRankRatioPreprocessor': {'target_ratio': 0.8, 'language': language, 'use_short_name': use_short_name},
         'DependencyTreeDepthRatioPreprocessor': {
-            'target_ratio': 0.9,
+            'target_ratio': 0.8,
             'language': language,
             'use_short_name': use_short_name,
         },
@@ -85,6 +85,12 @@ def get_access_preprocessors_kwargs(language, use_short_name=False):
 
 def get_predict_files(language):
     return {
+        'en': [get_data_filepath('asset', 'valid', 'complex'), get_data_filepath('asset', 'test', 'complex')],
+        'fr': [get_data_filepath('alector', 'valid', 'complex'), get_data_filepath('alector', 'test', 'complex')],
+        'es': [
+            get_data_filepath('simplext_corpus', 'valid', 'complex'),
+            get_data_filepath('simplext_corpus', 'test', 'complex'),
+        ],
         'pt': [get_data_filepath(TEST_DATASET, 'valid', 'complex'),
         get_data_filepath(TEST_DATASET, 'test', 'complex')]
     }[language]
@@ -92,6 +98,28 @@ def get_predict_files(language):
 
 def get_evaluate_kwargs(language, phase='valid'):
     return {
+        ('en', 'valid'): {'test_set': 'asset_valid'},
+        ('en', 'test'): {'test_set': 'asset_test'},
+        ('fr', 'valid'): {
+            'test_set': 'custom',
+            'orig_sents_path': get_data_filepath('alector', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('alector', 'valid', 'simple')],
+        },
+        ('fr', 'test'): {
+            'test_set': 'custom',
+            'orig_sents_path': get_data_filepath('alector', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('alector', 'test', 'simple')],
+        },
+        ('es', 'valid'): {
+            'test_set': 'custom',
+            'orig_sents_path': get_data_filepath('simplext_corpus', 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath('simplext_corpus', 'valid', 'simple')],
+        },
+        ('es', 'test'): {
+            'test_set': 'custom',
+            'orig_sents_path': get_data_filepath('simplext_corpus', 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath('simplext_corpus', 'test', 'simple')],
+        },
         ('pt', 'valid'): {
             'test_set': 'custom',
             'orig_sents_path': get_data_filepath(TEST_DATASET, 'valid', 'complex'),
@@ -259,6 +287,59 @@ def get_mbart_kwargs(dataset, language, use_access, restore_file_path = None, us
 
 def get_all_baseline_rows():
     paths = {
+        ('asset', 'test'): ('en', TEST_SETS_PATHS[('asset_test', 'orig')], TEST_SETS_PATHS[('asset_test', 'refs')]),
+        ('asset', 'valid'): ('en', TEST_SETS_PATHS[('asset_valid', 'orig')], TEST_SETS_PATHS[('asset_valid', 'refs')]),
+        ('turkcorpus_detokenized', 'test'): (
+            'en',
+            TEST_SETS_PATHS[('turkcorpus_test', 'orig')],
+            TEST_SETS_PATHS[('turkcorpus_test', 'refs')],
+        ),
+        ('turkcorpus_detokenized', 'valid'): (
+            'en',
+            TEST_SETS_PATHS[('turkcorpus_valid', 'orig')],
+            TEST_SETS_PATHS[('turkcorpus_valid', 'refs')],
+        ),
+        ('alector', 'test'): (
+            'fr',
+            get_data_filepath('alector', 'test', 'complex'),
+            [get_data_filepath('alector', 'test', 'simple')],
+        ),
+        ('alector', 'valid'): (
+            'fr',
+            get_data_filepath('alector', 'valid', 'complex'),
+            [get_data_filepath('alector', 'valid', 'simple')],
+        ),
+        # Old dataset with problems
+        ('simplext_corpus_all', 'test'): (
+            'es',
+            get_data_filepath('simplext_corpus_all', 'test', 'complex'),
+            [get_data_filepath('simplext_corpus_all', 'test', 'simple')],
+        ),
+        ('simplext_corpus_all', 'valid'): (
+            'es',
+            get_data_filepath('simplext_corpus_all', 'valid', 'complex'),
+            [get_data_filepath('simplext_corpus_all', 'valid', 'simple')],
+        ),
+        ('simplext_corpus_all_fixed', 'test'): (
+            'es',
+            get_data_filepath('simplext_corpus_all_fixed', 'test', 'complex'),
+            [get_data_filepath('simplext_corpus_all_fixed', 'test', 'simple')],
+        ),
+        ('simplext_corpus_all_fixed', 'valid'): (
+            'es',
+            get_data_filepath('simplext_corpus_all_fixed', 'valid', 'complex'),
+            [get_data_filepath('simplext_corpus_all_fixed', 'valid', 'simple')],
+        ),
+        ('simpitiki', 'test'): (
+            'it',
+            get_data_filepath('simpitiki', 'test', 'complex'),
+            [get_data_filepath('simpitiki', 'test', 'simple')],
+        ),
+        ('simpitiki', 'valid'): (
+            'it',
+            get_data_filepath('simpitiki', 'valid', 'complex'),
+            [get_data_filepath('simpitiki', 'valid', 'simple')],
+        ),
         (TEST_DATASET, 'test'): (
             'pt',
             get_data_filepath(TEST_DATASET, 'test', 'complex'),
