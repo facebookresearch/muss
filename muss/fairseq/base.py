@@ -57,7 +57,7 @@ def fairseq_preprocess(dataset, dict_path=None, source_lang='complex', target_la
             testpref = str(get_data_filepath(dataset, 'test', 'dummy')).replace('.dummy', '')
             args = f'''
                 --source-lang {source_lang} --target-lang {target_lang} --trainpref {trainpref} --validpref {validpref} --testpref {testpref}
-                --destdir {preprocessed_dir} --bpe sentencepiece
+                --destdir {preprocessed_dir}
                 --joined-dictionary --workers 32
             '''
             if dict_path is not None:
@@ -75,7 +75,7 @@ def fairseq_train(
     preprocessed_dir,
     exp_dir,
     ngpus=1,
-    batch_size=8192,  # Batch size across all gpus (taking update freq into account)
+    batch_size=1024,  # Batch size across all gpus (taking update freq into account)
     max_sentences=64,  # Max sentences per GPU
     arch='transformer',
     save_interval_updates=100,
@@ -111,7 +111,7 @@ def fairseq_train(
         --no-epoch-checkpoints --save-interval 999999 --validate-interval 999999
         --max-update {max_update} --save-interval-updates {save_interval_updates} --keep-interval-updates 1 --patience 10
         --batch-size {max_sentences} --seed {seed}
-        --distributed-world-size {ngpus} --distributed-port {distributed_port}
+        --distributed-world-size {ngpus} --distributed-port {distributed_port} --reset-optimizer
         '''
         if lr_scheduler == 'inverse_sqrt':
             args += '--warmup-init-lr 1e-07'

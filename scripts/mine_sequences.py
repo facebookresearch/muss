@@ -41,11 +41,11 @@ ccnet_dir = Path(
         'Please download the CCNet corpus from https://github.com/facebookresearch/cc_net and enter the path to the downloaded data: '
     )
 )
-language = input('What language do you want to process? (en/fr/es): ')
+language = input('What language do you want to process? (en/fr/es/pt): ')
 cluster = 'local'
 dataset_dir = get_dataset_dir('uts') / language
 # For large jobs only
-slurm_partition = 'dev,scavenge'
+slurm_partition = 'debug'
 slurm_array_parallelism = 1024
 
 # Split CCNet shards into subshards
@@ -54,6 +54,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     n_shards = {  # Number of shards to take for each languages for ~1B sentences
         'en': 15,
         'fr': 25,
+        'pt': 6,
         'es': 13,  # We would need about 20 shards for 1B sentences, but there are only 13
     }[language]
     ccnet_filepaths = [ccnet_dir / f'{language}_head_{i:04d}.json.gz' for i in range(n_shards)]
@@ -61,7 +62,7 @@ with log_action('Splitting CCNet shards into smaller subshards'):
     raw_original_dir.mkdir(exist_ok=True, parents=True)
     output_dirs = [raw_original_dir / f'{language}_head_{i:04d}' for i in range(n_shards)]
     n_docs_per_file = 50000
-    executor = get_executor(cluster=cluster, slurm_partition='dev', timeout_min=1 * 30, slurm_array_parallelism=16)
+    executor = get_executor(cluster=cluster, slurm_partition='debug', timeout_min=1 * 30, slurm_array_parallelism=16)
     jobs = []
     with executor.batch():
         for ccnet_filepath, output_dir in zip(ccnet_filepaths, output_dirs):
@@ -96,12 +97,12 @@ with log_action('Tokenizing sentences'):
 
 embeddings_type_name = f'laser_{language}'
 get_embeddings = lambda sentences: get_laser_embeddings(
-    sentences, max_tokens=3000, language=language, n_encoding_jobs=10
+    sentences, max_tokens=1000, language=language, n_encoding_jobs=8
 )  # noqa: E731
 
 # Create base index
 with log_action('Creating base index'):
-    n_train_sentences = 10 ** 7
+    n_train_sentences =  10 ** 7
     train_sentences = []
     for sentences_path in get_sentences_paths(dataset_dir):
         for sentence in yield_lines(sentences_path):
@@ -128,10 +129,9 @@ with log_action('Computing embeddings'):
     executor = get_executor(
         cluster=cluster,
         slurm_partition=slurm_partition,
-        timeout_min=2 * 60,
+        timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    jobs = []
     with executor.batch():
         for sentences_path in set(query_sentences_paths + db_sentences_paths):
             if get_index_path(sentences_path, indexes_dir).exists():
@@ -153,10 +153,9 @@ with log_action('Mining paraphrases'):
     executor = get_executor(
         cluster=cluster,
         slurm_partition=slurm_partition,
-        timeout_min=2 * 60,
+        timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
-    jobs = []
     # Run NN search query file by query file
     with executor.batch():
         for query_sentences_path in tqdm(query_sentences_paths, desc='submitting queries'):
@@ -214,7 +213,7 @@ with log_action('Filtering candidate paraphrases'):
     executor = get_executor(
         cluster=cluster,
         slurm_partition=slurm_partition,
-        timeout_min=2 * 60,
+        timeout_min=4 * 60,
         slurm_array_parallelism=slurm_array_parallelism,
     )
     with executor.batch():

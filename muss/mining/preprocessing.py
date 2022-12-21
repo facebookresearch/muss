@@ -15,7 +15,7 @@ import faiss
 
 from muss.preprocessing import normalize_punctuation
 from muss.text import yield_sentence_concatenations, normalize_unicode
-from muss.kenlm import get_kenlm_log_prob
+from muss.kenlm import get_kenlm_log_prob, get_kenlm_wiki_log_prob
 from muss.utils.helpers import batch_items, log_action, yield_lines
 from muss.resources.paths import RESOURCES_DIR
 from muss.mining.nn_search import cached_count_lines
@@ -63,13 +63,20 @@ def has_low_lm_prob(text, language):
         'es': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_es', -0.8),
         'it': (RESOURCES_DIR / 'models/language_models/kenlm_ccnet_it', -0.8),
     }[language]
-    if not model_dir.exists():
-        print(
-            f'WARNING: no kenlm language model found for {language}, you need to train your own (see https://github.com/kpu/kenlm). Skipping language model filtering.'  # noqa: E501
-        )
-        return False
-    return get_kenlm_log_prob(text, model_dir) / len(text) < slope
 
+    if model_dir.exists():
+        # Manually trained kenlm models
+        return get_kenlm_log_prob(text, model_dir) / len(text) < slope
+    else:
+        try:
+            # Kenlm models available on huggingface
+            perplexity = get_kenlm_wiki_log_prob(text, language)
+            return perplexity <= 100 or perplexity >= 1500 # Values chosen experimentally
+        except:
+            print(
+                f'WARNING: no kenlm language model found for {language}, you need to train your own (see https://github.com/kpu/kenlm) or adapt it (see https://huggingface.co/edugp/kenlm). Skipping language model filtering.'  # noqa: E501
+            )
+            return False
 
 def sentence_tokenize_document(document, language):
     document = document.replace('\n', ' ').replace('\x00', ' ').replace('\t', ' ')

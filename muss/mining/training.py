@@ -21,6 +21,15 @@ from muss.preprocessing import apply_line_function_to_file
 from muss.fairseq.main import get_language_from_dataset
 from muss.text import truncate
 
+TEST_DATASET = 'porsimples'
+
+MBART_DICT_FILENAME = {
+    'pt': 'dict.pt_XX.txt',
+    'en': 'dict.txt',
+    'fr': 'dict.txt',
+    'es': 'dict.txt'
+}
+
 
 def prepare_bart_model(model_name):
     bart_dir = MODELS_DIR / model_name
@@ -44,12 +53,21 @@ def fix_bart_base_model_embeddings_shape():
         torch.save(model, f)
 
 
-def prepare_mbart_model():
+def prepare_mbart_model(language):
     mbart_dir = MODELS_DIR / 'mbart'
     if not mbart_dir.exists():
-        url = 'https://dl.fbaipublicfiles.com/fairseq/models/mbart/mbart.CC25.tar.gz'
+        url = get_mbart_download_url(language)
         shutil.move(download_and_extract(url)[0], mbart_dir)
     return mbart_dir
+
+
+def get_mbart_download_url(language):
+    if language == 'pt':
+        # mbart with 50 languages
+        return 'https://dl.fbaipublicfiles.com/fairseq/models/mbart50/mbart50.pretrained.tar.gz'
+    else: 
+        # mbart with 25 languages
+        return 'https://dl.fbaipublicfiles.com/fairseq/models/mbart/mbart.CC25.tar.gz'
 
 
 def get_access_preprocessors_kwargs(language, use_short_name=False):
@@ -73,6 +91,8 @@ def get_predict_files(language):
             get_data_filepath('simplext_corpus', 'valid', 'complex'),
             get_data_filepath('simplext_corpus', 'test', 'complex'),
         ],
+        'pt': [get_data_filepath(TEST_DATASET, 'valid', 'complex'),
+        get_data_filepath(TEST_DATASET, 'test', 'complex')]
     }[language]
 
 
@@ -100,6 +120,16 @@ def get_evaluate_kwargs(language, phase='valid'):
             'orig_sents_path': get_data_filepath('simplext_corpus', 'test', 'complex'),
             'refs_sents_paths': [get_data_filepath('simplext_corpus', 'test', 'simple')],
         },
+        ('pt', 'valid'): {
+            'test_set': 'custom',
+            'orig_sents_path': get_data_filepath(TEST_DATASET, 'valid', 'complex'),
+            'refs_sents_paths': [get_data_filepath(TEST_DATASET, 'valid', 'simple')],
+        },
+        ('pt', 'test'): {
+            'test_set': 'custom',
+            'orig_sents_path': get_data_filepath(TEST_DATASET, 'test', 'complex'),
+            'refs_sents_paths': [get_data_filepath(TEST_DATASET, 'test', 'simple')],
+        }
     }[(language, phase)]
 
 
@@ -109,7 +139,8 @@ def get_transformer_kwargs(dataset, language, use_access, use_short_name=False):
         'parametrization_budget': 128,
         'predict_files': get_predict_files(language),
         'train_kwargs': {
-            'ngpus': 8,
+            'ngpus': 1,
+            'max_sentences': 32,
             'arch': 'bart_large',
             'max_tokens': 4096,
             'truncate_source': True,
@@ -202,11 +233,21 @@ def get_bart_kwargs(dataset, language, use_access, use_short_name=False, bart_mo
     return kwargs
 
 
-def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
-    mbart_dir = prepare_mbart_model()
-    mbart_path = mbart_dir / 'model.pt'
-    # source_lang = f'{language}_XX'
-    # target_lang = f'{language}_XX'
+def get_mbart_languages_from_model(language):
+    if language == "pt": # languages that use mbart50
+        return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI'  # noqa: E501
+    else:
+        return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'  # noqa: E501
+
+
+def get_mbart_kwargs(dataset, language, use_access, restore_file_path = None, use_short_name=False):
+    mbart_dir = prepare_mbart_model(language)
+
+    if restore_file_path is None:
+        mbart_path = mbart_dir / 'model.pt'
+    else:
+        mbart_path = restore_file_path
+
     source_lang = 'complex'
     target_lang = 'simple'
     kwargs = {
@@ -221,19 +262,19 @@ def get_mbart_kwargs(dataset, language, use_access, use_short_name=False):
             },
         },
         'preprocess_kwargs': {
-            'dict_path': mbart_dir / 'dict.txt',
+            'dict_path': mbart_dir / MBART_DICT_FILENAME[language],
             'source_lang': source_lang,
             'target_lang': target_lang,
         },
         'train_kwargs': add_dicts(
-            {'ngpus': 8},
+            {'ngpus': 1},
             args_str_to_dict(
-                f'''--restore-file {mbart_path}  --arch mbart_large --task translation_from_pretrained_bart  --source-lang {source_lang} --target-lang {target_lang}  --encoder-normalize-before --decoder-normalize-before --criterion label_smoothed_cross_entropy --label-smoothing 0.2  --dataset-impl mmap --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' --lr-scheduler polynomial_decay --lr 3e-05 --min-lr -1 --warmup-updates 2500 --total-num-update 40000 --dropout 0.3 --attention-dropout 0.1  --weight-decay 0.0 --max-tokens 1024 --update-freq 2 --log-format simple --log-interval 2 --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler --langs ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN
+                f'''--restore-file {mbart_path} --arch mbart_large --task translation_from_pretrained_bart  --source-lang {source_lang} --target-lang {target_lang}  --encoder-normalize-before --decoder-normalize-before --criterion label_smoothed_cross_entropy --label-smoothing 0.2  --dataset-impl mmap --optimizer adam --adam-eps 1e-06 --adam-betas '(0.9, 0.98)' --lr-scheduler polynomial_decay --lr 3e-05 --min-lr -1 --warmup-updates 2500 --total-num-update 40000 --dropout 0.3 --attention-dropout 0.1  --weight-decay 0.0 --max-tokens 1024 --update-freq 2 --log-format simple --log-interval 2 --reset-optimizer --reset-meters --reset-dataloader --reset-lr-scheduler --langs {get_mbart_languages_from_model(language)}
      --layernorm-embedding  --ddp-backend no_c10d'''
             ),
         ),  # noqa: E501
         'generate_kwargs': args_str_to_dict(
-            f'''--task translation_from_pretrained_bart --source_lang {source_lang} --target-lang {target_lang} --batch-size 32 --langs ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'''  # noqa: E501
+            f'''--task translation_from_pretrained_bart --source_lang {source_lang} --target-lang {target_lang} --batch-size 32 --langs {get_mbart_languages_from_model(language)}'''  # noqa: E501
         ),
         'evaluate_kwargs': get_evaluate_kwargs(language),
     }
@@ -299,6 +340,16 @@ def get_all_baseline_rows():
             get_data_filepath('simpitiki', 'valid', 'complex'),
             [get_data_filepath('simpitiki', 'valid', 'simple')],
         ),
+        (TEST_DATASET, 'test'): (
+            'pt',
+            get_data_filepath(TEST_DATASET, 'test', 'complex'),
+            [get_data_filepath(TEST_DATASET, 'test', 'simple')],
+        ),
+        (TEST_DATASET, 'valid'): (
+            'pt',
+            get_data_filepath(TEST_DATASET, 'valid', 'complex'),
+            [get_data_filepath(TEST_DATASET, 'valid', 'simple')],
+        )
     }
     rows = []
     for (dataset, phase), (language, orig_sents_path, refs_sents_paths) in tqdm(paths.items()):

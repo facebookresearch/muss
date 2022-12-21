@@ -1,0 +1,1 @@
+The texts present in this folder were obtained from the https://github.com/chirico85/muss_tbd/tree/muss_german/resources/datasets repository and translated into Portuguese.

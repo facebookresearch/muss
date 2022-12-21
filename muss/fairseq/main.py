@@ -23,15 +23,17 @@ from muss.simplifiers import get_fairseq_simplifier, get_preprocessed_simplifier
 from muss.utils.submitit import get_job_id
 from muss.utils.helpers import print_running_time, add_dicts
 
+TEST_DATASET = 'porsimples'
+
 
 def check_dataset(dataset):
     # Sanity check with evaluation dataset
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('asset', 'valid', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath(TEST_DATASET, 'valid', 'complex')
     ):
         warnings.warn('WARNING: Dataset has validation samples in training set!')
     if has_lines_in_common(
-        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath('asset', 'test', 'complex')
+        get_data_filepath(dataset, 'train', 'complex'), get_data_filepath(TEST_DATASET, 'test', 'complex')
     ):
         warnings.warn('WARNING: Dataset has test samples in training set!')
 
@@ -90,13 +92,13 @@ def get_predictions(source_path, exp_dir, **kwargs):
 
 def fairseq_evaluate(exp_dir, **kwargs):
     simplifier = fairseq_get_simplifier(exp_dir, **kwargs)
-    evaluate_kwargs = kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'})
+    evaluate_kwargs = kwargs.get('evaluate_kwargs', {'test_set': 'custom'})
     return evaluate_simplifier(simplifier, **evaluate_kwargs)
 
 
 def get_easse_report_from_exp_dir(exp_dir, **kwargs):
     simplifier = fairseq_get_simplifier(exp_dir, **kwargs)
-    return get_easse_report(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'}))
+    return get_easse_report(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'custom'}))
 
 
 def fairseq_evaluate_and_save(exp_dir, **kwargs):
@@ -106,7 +108,7 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath('asset', 'valid', 'complex'), get_data_filepath('asset', 'test', 'complex')]
+        'predict_files', [get_data_filepath(TEST_DATASET, 'valid', 'complex'), get_data_filepath(TEST_DATASET, 'test', 'complex')]
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
@@ -125,7 +127,7 @@ def find_best_parametrization_nevergrad(
         simplifier = fairseq_get_simplifier(
             exp_dir, preprocessors_kwargs=preprocessors_kwargs, generate_kwargs=kwargs.get('generate_kwargs', {})
         )
-        scores = evaluate_simplifier(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'}))
+        scores = evaluate_simplifier(simplifier, **kwargs.get('evaluate_kwargs', {'test_set': 'custom'}))
         return combine_metrics(scores['bleu'], scores['sari'], scores['fkgl'], metrics_coefs)
 
     def get_parametrization(preprocessors_kwargs):
@@ -152,7 +154,7 @@ def find_best_parametrization_nevergrad(
 def find_best_parametrization_fast(exp_dir, preprocessors_kwargs, **kwargs):
     preprocessors_kwargs = preprocessors_kwargs.copy()  # We are going to modify it inplace
     preprocessors = get_preprocessors(preprocessors_kwargs)
-    orig_sents, refs_sents = get_orig_and_refs_sents(**kwargs.get('evaluate_kwargs', {'test_set': 'asset_valid'}))
+    orig_sents, refs_sents = get_orig_and_refs_sents(**kwargs.get('evaluate_kwargs', {'test_set': 'custom'}))
     features = defaultdict(list)
     for ref_sents in refs_sents:
         for orig_sent, ref_sent in zip(orig_sents, ref_sents):
@@ -174,6 +176,8 @@ def find_best_parametrization(exp_dir, preprocessors_kwargs, fast_parametrizatio
 
 def get_language_from_dataset(dataset):
     # TODO: Should be in ts.uts.training
+    if '_pt_' in dataset:
+        return 'pt'
     if '_fr_' in dataset:
         return 'fr'
     if '_es_' in dataset:
@@ -190,6 +194,7 @@ def get_datasets_for_language(language):
         'en': ['asset', 'turkcorpus_detokenized'],
         'fr': ['alector'],
         'es': ['simplext_corpus_all_fixed'],
+        'pt': [TEST_DATASET]
         # 'it': ['simpitiki']
     }[language]
 
@@ -223,7 +228,10 @@ def fairseq_train_and_evaluate_with_parametrization(dataset, **kwargs):
     # Training
     exp_dir = print_running_time(fairseq_prepare_and_train)(dataset, **kwargs)
     # Find best parametrization
-    recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
+    try:
+        recommended_preprocessors_kwargs = print_running_time(find_best_parametrization)(exp_dir, **kwargs)
+    finally:
+        print("Error trying to find the best parameterization")
     print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
     kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
     # Evaluation

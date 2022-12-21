@@ -54,7 +54,7 @@ def get_executor(
         print_result,
         print_running_time,
     ],
-    timeout_min=1 * 12 * 60,
+    timeout_min=3 * 12 * 60,
     slurm_partition='learnfair',
     catch=False,
     gpus_per_node=1,
