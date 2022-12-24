@@ -15,8 +15,8 @@ import argparse
 
 # This dataset should exist in resources/datasets/ and contain the following files:
 # train.complex, train.simple, valid.complex, valid.simple, test.complex, test.simple
-#prepare_wikilarge_detokenized()
-#prepare_asset()
+# prepare_wikilarge_detokenized()
+# prepare_asset()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train muss model')
@@ -24,13 +24,13 @@ if __name__ == '__main__':
     parser.add_argument('--language', type=str, help='language target')
     args = parser.parse_args()
     dataset = args.datasetname
-    kwargs = get_mbart_kwargs(dataset=dataset, language=args.language, restore_file_path = None, use_access=True)
+    kwargs = get_mbart_kwargs(dataset=dataset, language=args.language, restore_file_path=None, use_access=True)
     kwargs['train_kwargs']['ngpus'] = 1
     kwargs['train_kwargs']['memory_efficient_fp16'] = True
     kwargs['train_kwargs']['max_sentences'] = 32
     kwargs['train_kwargs']['max_tokens'] = 1024
-    #kwargs['train_kwargs']['no_epoch_checkpoints'] = True
-    #kwargs['train_kwargs']['stop_min_lr'] = 0.5
-    #kwargs['train_kwargs']['update_freq'] = 100
-    #kwargs['train_kwargs']['batch_size'] = 16
+    # kwargs['train_kwargs']['no_epoch_checkpoints'] = True
+    # kwargs['train_kwargs']['stop_min_lr'] = 0.5
+    # kwargs['train_kwargs']['update_freq'] = 100
+    # kwargs['train_kwargs']['batch_size'] = 16
     result = fairseq_train_and_evaluate_with_parametrization(**kwargs)

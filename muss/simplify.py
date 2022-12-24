@@ -15,13 +15,7 @@ from muss.utils.resources import download_and_extract
 
 
 # Models are the best of each experiment according to validation SARI score
-ALLOWED_MODEL_NAMES = [
-    'muss_en_wikilarge_mined',
-    'muss_en_mined',
-    'muss_fr_mined',
-    'muss_es_mined',
-    'muss_pt_mined'
-]
+ALLOWED_MODEL_NAMES = ['muss_en_wikilarge_mined', 'muss_en_mined', 'muss_fr_mined', 'muss_es_mined', 'muss_pt_mined']
 
 TOKENS_RATIO_DEFAULT = {
     "LengthRatioPreprocessor": 0.9,
@@ -69,9 +63,20 @@ def get_muss_preprocessors(model_name):
     language = get_language_from_model_name(model_name)
     preprocessors_kwargs = {
         'LengthRatioPreprocessor': {'target_ratio': TOKENS_RATIO["LengthRatioPreprocessor"], 'use_short_name': False},
-        'ReplaceOnlyLevenshteinPreprocessor': {'target_ratio': TOKENS_RATIO["ReplaceOnlyLevenshteinPreprocessor"], 'use_short_name': False},
-        'WordRankRatioPreprocessor': {'target_ratio': TOKENS_RATIO["WordRankRatioPreprocessor"], 'language': language, 'use_short_name': False},
-        'DependencyTreeDepthRatioPreprocessor': {'target_ratio': TOKENS_RATIO["DependencyTreeDepthRatioPreprocessor"], 'language': language, 'use_short_name': False},
+        'ReplaceOnlyLevenshteinPreprocessor': {
+            'target_ratio': TOKENS_RATIO["ReplaceOnlyLevenshteinPreprocessor"],
+            'use_short_name': False,
+        },
+        'WordRankRatioPreprocessor': {
+            'target_ratio': TOKENS_RATIO["WordRankRatioPreprocessor"],
+            'language': language,
+            'use_short_name': False,
+        },
+        'DependencyTreeDepthRatioPreprocessor': {
+            'target_ratio': TOKENS_RATIO["DependencyTreeDepthRatioPreprocessor"],
+            'language': language,
+            'use_short_name': False,
+        },
     }
     if is_model_using_mbart(model_name):
         preprocessors_kwargs['SentencePiecePreprocessor'] = {
@@ -90,9 +95,7 @@ def simplify_sentences(source_sentences, model_name='muss_en_wikilarge_mined'):
     generate_kwargs = {}
     if is_model_using_mbart(model_name):
         generate_kwargs['task'] = 'translation_from_pretrained_bart'
-        generate_kwargs[
-            'langs'
-        ] = get_mbart_languages_from_model(model_name)
+        generate_kwargs['langs'] = get_mbart_languages_from_model(model_name)
     simplifier = get_fairseq_simplifier(exp_dir, **generate_kwargs)
     simplifier = get_preprocessed_simplifier(simplifier, preprocessors=preprocessors)
     source_path = get_temp_filepath()

@@ -227,7 +227,7 @@ def get_spacy_model(language='en', size='md'):
     return spacy.load(model_name)  # python -m spacy download en_core_web_sm
 
 
-@lru_cache(maxsize=10 ** 6)
+@lru_cache(maxsize=10**6)
 def spacy_process(text, language='en', size='md'):
     return get_spacy_model(language=language, size=size)(str(text))
 
@@ -280,6 +280,7 @@ def normalize_unicode(text):
 @lru_cache(maxsize=1)
 def get_spacy_tokenizer(language='en'):
     from spacy.tokenizer import Tokenizer
+
     return Tokenizer(get_spacy_model(language=language).vocab)
 
 

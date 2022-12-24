@@ -39,7 +39,9 @@ def train_kenlm_language_model(input_data_paths, output_model_dir):
 
 @lru_cache(maxsize=10)
 def get_spm_tokenizer(model_dir):
-    assert model_dir.exists(), 'You can download models at https://dl.fbaipublicfiles.com/muss/muss_mining_filtering_kenlm_language_models.tar.gz'
+    assert (
+        model_dir.exists()
+    ), 'You can download models at https://dl.fbaipublicfiles.com/muss/muss_mining_filtering_kenlm_language_models.tar.gz'
     merges_file = model_dir / 'spm_tokenizer-merges.txt'
     vocab_file = model_dir / 'spm_tokenizer-vocab.json'
     return SentencePieceBPETokenizer(vocab_file=str(vocab_file), merges_file=str(merges_file))
@@ -47,7 +49,9 @@ def get_spm_tokenizer(model_dir):
 
 @lru_cache(maxsize=10)
 def get_kenlm_model(model_dir):
-    assert model_dir.exists(), 'You can download models at https://dl.fbaipublicfiles.com/muss/muss_mining_filtering_kenlm_language_models.tar.gz'
+    assert (
+        model_dir.exists()
+    ), 'You can download models at https://dl.fbaipublicfiles.com/muss/muss_mining_filtering_kenlm_language_models.tar.gz'
     model_file = model_dir / 'kenlm_model.arpa'
     return kenlm.Model(str(model_file))
 
@@ -58,7 +62,9 @@ def get_kenlm_log_prob(text, model_dir, *args, **kwargs):
     encoded_text = ' '.join(tokenizer.encode(text).tokens)
     return kenlm_model.score(encoded_text, *args, **kwargs)
 
+
 # Adaptation of the kenlm model from the repository https://huggingface.co/edugp/kenlm
+
 
 @lru_cache(maxsize=10)
 def get_kenlm_wiki_model(language):

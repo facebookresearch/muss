@@ -15,7 +15,7 @@ from muss.utils.helpers import failsafe_division, yield_lines
 
 
 @lru_cache(maxsize=10)
-def get_word2rank(vocab_size=10 ** 5, language='en'):
+def get_word2rank(vocab_size=10**5, language='en'):
     word2rank = {}
     line_generator = yield_lines(get_fasttext_embeddings_path(language))
     next(line_generator)  # Skip the first line (header)

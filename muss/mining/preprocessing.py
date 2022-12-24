@@ -71,12 +71,13 @@ def has_low_lm_prob(text, language):
         try:
             # Kenlm models available on huggingface
             perplexity = get_kenlm_wiki_log_prob(text, language)
-            return perplexity <= 100 or perplexity >= 1500 # Values chosen experimentally
+            return perplexity <= 100 or perplexity >= 1500  # Values chosen experimentally
         except:
             print(
                 f'WARNING: no kenlm language model found for {language}, you need to train your own (see https://github.com/kpu/kenlm) or adapt it (see https://huggingface.co/edugp/kenlm). Skipping language model filtering.'  # noqa: E501
             )
             return False
+
 
 def sentence_tokenize_document(document, language):
     document = document.replace('\n', ' ').replace('\x00', ' ').replace('\t', ' ')

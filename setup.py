@@ -22,7 +22,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Louis Martin',
     author_email='louismartincs@gmail.com',
-    url = 'https://github.com/facebookresearch/muss',
+    url='https://github.com/facebookresearch/muss',
     packages=find_packages('muss'),
     install_requires=requirements,
 )

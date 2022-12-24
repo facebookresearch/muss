@@ -108,7 +108,8 @@ def fairseq_evaluate_and_save(exp_dir, **kwargs):
     shutil.move(get_easse_report_from_exp_dir(exp_dir, **kwargs), report_path)
     print(f'report_path={report_path}')
     predict_files = kwargs.get(
-        'predict_files', [get_data_filepath(TEST_DATASET, 'valid', 'complex'), get_data_filepath(TEST_DATASET, 'test', 'complex')]
+        'predict_files',
+        [get_data_filepath(TEST_DATASET, 'valid', 'complex'), get_data_filepath(TEST_DATASET, 'test', 'complex')],
     )
     for source_path in predict_files:
         pred_path = get_predictions(source_path, exp_dir, **kwargs)
@@ -144,7 +145,7 @@ def find_best_parametrization_nevergrad(
     if parametrization.dimension == 0:
         return preprocessors_kwargs
     # No need to search a lot when there are only a few parameters
-    parametrization_budget = min(32 ** parametrization.dimension, parametrization_budget)
+    parametrization_budget = min(32**parametrization.dimension, parametrization_budget)
     optimizer = ng.optimizers.OnePlusOne(parametrization=parametrization, budget=parametrization_budget, num_workers=1)
     optimizer.register_callback("tell", ng.callbacks.ProgressBar())
     recommendation = optimizer.minimize(evaluate_parametrization, verbosity=0)

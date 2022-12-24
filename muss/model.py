@@ -61,9 +61,7 @@ class KenlmModel:
         "►": "-",
     }
     unicode_punct_re = re.compile(f"[{''.join(unicode_punct.keys())}]")
-    non_printing_chars_re = re.compile(
-        f"[{''.join(map(chr, list(range(0,32)) + list(range(127,160))))}]"
-    )
+    non_printing_chars_re = re.compile(f"[{''.join(map(chr, list(range(0,32)) + list(range(127,160))))}]")
     kenlm_model_dir = None
     sentence_piece_model_dir = None
 

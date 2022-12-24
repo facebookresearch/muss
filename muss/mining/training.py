@@ -23,12 +23,7 @@ from muss.text import truncate
 
 TEST_DATASET = 'porsimples'
 
-MBART_DICT_FILENAME = {
-    'pt': 'dict.pt_XX.txt',
-    'en': 'dict.txt',
-    'fr': 'dict.txt',
-    'es': 'dict.txt'
-}
+MBART_DICT_FILENAME = {'pt': 'dict.pt_XX.txt', 'en': 'dict.txt', 'fr': 'dict.txt', 'es': 'dict.txt'}
 
 
 def prepare_bart_model(model_name):
@@ -65,7 +60,7 @@ def get_mbart_download_url(language):
     if language == 'pt':
         # mbart with 50 languages
         return 'https://dl.fbaipublicfiles.com/fairseq/models/mbart50/mbart50.pretrained.tar.gz'
-    else: 
+    else:
         # mbart with 25 languages
         return 'https://dl.fbaipublicfiles.com/fairseq/models/mbart/mbart.CC25.tar.gz'
 
@@ -91,8 +86,7 @@ def get_predict_files(language):
             get_data_filepath('simplext_corpus', 'valid', 'complex'),
             get_data_filepath('simplext_corpus', 'test', 'complex'),
         ],
-        'pt': [get_data_filepath(TEST_DATASET, 'valid', 'complex'),
-        get_data_filepath(TEST_DATASET, 'test', 'complex')]
+        'pt': [get_data_filepath(TEST_DATASET, 'valid', 'complex'), get_data_filepath(TEST_DATASET, 'test', 'complex')],
     }[language]
 
 
@@ -129,7 +123,7 @@ def get_evaluate_kwargs(language, phase='valid'):
             'test_set': 'custom',
             'orig_sents_path': get_data_filepath(TEST_DATASET, 'test', 'complex'),
             'refs_sents_paths': [get_data_filepath(TEST_DATASET, 'test', 'simple')],
-        }
+        },
     }[(language, phase)]
 
 
@@ -234,13 +228,13 @@ def get_bart_kwargs(dataset, language, use_access, use_short_name=False, bart_mo
 
 
 def get_mbart_languages_from_model(language):
-    if language == "pt": # languages that use mbart50
+    if language == "pt":  # languages that use mbart50
         return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN,af_ZA,az_AZ,bn_IN,fa_IR,he_IL,hr_HR,id_ID,ka_GE,km_KH,mk_MK,ml_IN,mn_MN,mr_IN,pl_PL,ps_AF,pt_XX,sv_SE,sw_KE,ta_IN,te_IN,th_TH,tl_XX,uk_UA,ur_PK,xh_ZA,gl_ES,sl_SI'  # noqa: E501
     else:
         return 'ar_AR,cs_CZ,de_DE,en_XX,es_XX,et_EE,fi_FI,fr_XX,gu_IN,hi_IN,it_IT,ja_XX,kk_KZ,ko_KR,lt_LT,lv_LV,my_MM,ne_NP,nl_XX,ro_RO,ru_RU,si_LK,tr_TR,vi_VN,zh_CN'  # noqa: E501
 
 
-def get_mbart_kwargs(dataset, language, use_access, restore_file_path = None, use_short_name=False):
+def get_mbart_kwargs(dataset, language, use_access, restore_file_path=None, use_short_name=False):
     mbart_dir = prepare_mbart_model(language)
 
     if restore_file_path is None:
@@ -349,7 +343,7 @@ def get_all_baseline_rows():
             'pt',
             get_data_filepath(TEST_DATASET, 'valid', 'complex'),
             [get_data_filepath(TEST_DATASET, 'valid', 'simple')],
-        )
+        ),
     }
     rows = []
     for (dataset, phase), (language, orig_sents_path, refs_sents_paths) in tqdm(paths.items()):

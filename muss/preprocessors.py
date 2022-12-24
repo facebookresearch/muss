@@ -342,7 +342,7 @@ class DependencyTreeDepthRatioPreprocessor(RatioPreprocessor):
         super().__init__(lambda sentence: get_dependency_tree_depth(sentence, language=language), *args, **kwargs)
 
 
-def train_sentencepiece(input_filepaths, vocab_size, sentencepiece_model_path, num_threads=64, max_lines=10 ** 7):
+def train_sentencepiece(input_filepaths, vocab_size, sentencepiece_model_path, num_threads=64, max_lines=10**7):
     with log_action('Training sentencepiece'):
         sentencepiece_model_path.parent.mkdir(parents=True, exist_ok=True)
         sentencepiece_model_prefix = sentencepiece_model_path.parent / sentencepiece_model_path.stem
@@ -383,7 +383,7 @@ class SentencePiecePreprocessor(AbstractPreprocessor):
         vocab_size=None,
         input_filepaths=None,
         num_threads=64,
-        max_lines=10 ** 7,
+        max_lines=10**7,
         sentencepiece_model_path=None,
         tokenize_special_tokens=False,
     ):
