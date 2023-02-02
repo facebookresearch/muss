@@ -234,7 +234,7 @@ def fairseq_train_and_evaluate_with_parametrization(dataset, **kwargs):
     finally:
         print("Error trying to find the best parameterization")
     print(f'recommended_preprocessors_kwargs={recommended_preprocessors_kwargs}')
-    kwargs['preprocessor_kwargs'] = recommended_preprocessors_kwargs
+    kwargs['preprocessors_kwargs'] = recommended_preprocessors_kwargs
     # Evaluation
     scores = print_running_time(fairseq_evaluate_and_save)(exp_dir, **kwargs)
     score = combine_metrics(scores['bleu'], scores['sari'], scores['fkgl'], kwargs.get('metrics_coefs', [0, 1, 0]))
